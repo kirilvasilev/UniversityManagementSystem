@@ -9,8 +9,6 @@ debug('ts-express:server');
 const port = normalizePort(process.env.PORT || 3000);
 Server.set('port', port);
 
-console.log(`Server listening on port ${port}`);
-
 const server = http.createServer(Server);
 server.listen(port);
 server.on('error', onError);
@@ -41,5 +39,6 @@ function onError(error: NodeJS.ErrnoException): void {
 function onListening(): void {
   const addr = server.address();
   const bind = (typeof addr === 'string') ? `pipe ${addr}` : `port ${addr.port}`;
-  debug(`Listening on ${bind}`);
+  debug(`Listening on ${bind}`); 
+  console.log(`Server listening on port ${port}`);
 }
