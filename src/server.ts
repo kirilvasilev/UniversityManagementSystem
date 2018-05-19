@@ -23,7 +23,15 @@ class Server {
     public config() {
         // set up mongoose
         const MONGO_URI = 'mongodb://localhost/ums';
-        mongoose.connect(MONGO_URI || process.env.MONGODB_URI);
+        mongoose.connect(MONGO_URI || process.env.MONGODB_URI).then(
+            () => { /** ready to use. The `mongoose.connect()` promise resolves to undefined. */ 
+            console.log(`Connected to MongoDB at ${MONGO_URI || process.env.MONGODB_URI}!`)
+            mongoose.connection.collections['users'].drop( (err) =>
+                console.log(`collection users dropped`));
+          }).catch(err => {
+            console.log("MongoDB connection error. Please make sure MongoDB is running. " + err);
+            // process.exit();
+          });
 
         // configure middleware
         this.app.use(bodyParser.urlencoded({extended : true}));
@@ -37,9 +45,12 @@ class Server {
     public routes(): void {
         let router: express.Router;
         router = express.Router();
-
-        this.app.use('/', router);
+        // router.get('/',(req, res) => {
+        //     res.render("home", {title: "Home"});
+        // );
         this.app.use('/api/v1/users', UserRouter);
+        this.app.use('/', router);
+       
     }
 }
 export default new Server().app;

@@ -24,10 +24,10 @@ class Course extends Schema {
         credits: {
             type: Number
         },
-        lecturer: [{
+        lecturer: {
             type: Schema.Types.ObjectId,
             ref: 'User'
-            }],
+            },
             createdAt: Date
         }, ...definitions});   
     }

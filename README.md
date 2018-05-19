@@ -1,5 +1,6 @@
-# Requierments
-## Server requerments
+# Requirements
+
+### Server requerments
 * Node.js LTS release installed [click here](https://nodejs.org/en/download/)
 * MondoDB installed [click here](https://www.mongodb.com/)
  ```

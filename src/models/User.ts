@@ -1,9 +1,10 @@
 import { Schema, model, SchemaDefinition } from 'mongoose';
+import { UMSSchema } from './BaseSchema';
 /**
 *Base User class that provides extensibility
 *
 */
-class User extends Schema {
+class User extends UMSSchema {
     userDefinitions: SchemaDefinition;
     constructor(definitions?: SchemaDefinition) {
         super({...{
@@ -27,8 +28,7 @@ class User extends Schema {
             type: String,
             enum: ['STUDENT', 'LECTURER'],
             default: 'STUDENT'
-        },
-        createdAt: Date,
+        },  
         credits: {
             type: Number,
             required: function() { return this.userType == 'STUDENT'; },
@@ -38,7 +38,7 @@ class User extends Schema {
             type: Schema.Types.ObjectId,
             required: function() { return this.userType == 'STUDENT';    },
             ref: 'Course'
-            }],
+            }]
         }, ...definitions});   
     }
 }

@@ -10,7 +10,7 @@ class UserRouter {
         this.routes();
     }
 
-    public GetUser(req: Request, res: Response): void {
+    public GetUser(req: Request, res: Response) {
         User.find({})
         .then(data => {
             const status = res.statusCode;
@@ -28,6 +28,10 @@ class UserRouter {
         });
     }
 
+    public CreateUser(req: Request, res: Response): void {
+        
+    }
+
     public DeleteUser(req: Request, res: Response): void {
         
     }
@@ -38,7 +42,10 @@ class UserRouter {
 
 
     public routes() {
-        this.router.get('/users', this.GetUser);
+        this.router.get('/', this.GetUser);
+        this.router.post('/', this.CreateUser);
+        this.router.put('/', this.UpdateUser);
+        this.router.post('/', this.DeleteUser);
     }
 }
 

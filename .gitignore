@@ -2,3 +2,6 @@ node_modules/
 dist/
 yarn-error.log
 .vscode/
+yarn.lock
+tslint.json
+package-lock.json
