@@ -13,6 +13,7 @@ class Course extends Schema {
             required: true, 
             trim: true
         }, 
+        description: String,
         schedule: [{
             courseDate: {
                 type: Date
@@ -27,8 +28,7 @@ class Course extends Schema {
         lecturer: {
             type: Schema.Types.ObjectId,
             ref: 'User'
-            },
-            createdAt: Date
+            }
         }, ...definitions});   
     }
 }

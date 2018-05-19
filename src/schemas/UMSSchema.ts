@@ -11,7 +11,7 @@ export class UMSSchema extends Schema {
             type: Boolean,
             default: false
         },
-        deletedAt: Date
+        deletedAt: Date 
     }, ...definitions});   
     }
 }
