@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import  * as HttpStatus  from 'http-status-codes';
 
-import { GetUserRepo } from '../container/ContainerProvider';
+import { GetUserRepo, GetCourseRepo } from '../container/ContainerProvider';
 import { handleError } from '../handlers/ErrorHandler';
 import { log, LogLevel } from '../logger/ILogger';
 
@@ -91,19 +91,33 @@ class UserRouter {
 
     public async GetUserCourses(req: Request, res: Response) {
         let repo = GetUserRepo();
+        
         try {
             let user = await repo.findById(req.params.id);
             if(user && !user.deleted){
-                //let signedCourses = repo.
-                if(user.userType == 'STUDENT'){
-                    res.status(HttpStatus.OK)
+
+                let courseRepo = GetCourseRepo();
+
+                if(user.userType == 'LECTURER'){
+                   let lecturerCourses = await courseRepo.find({lecturer: {$in: user._id}});
+                   let hangingCourses = await courseRepo.find({lecturer: null});
+                   
+                   res.status(HttpStatus.OK).json({
+                    lecturerCourses: lecturerCourses,
+                    hangingCourses: hangingCourses
+                });
                 }
                 else {
+                    let studentCourses = await courseRepo.find({_id: {$in: user.courses.map(course => course.course)}});
+                    let otherCourses = await courseRepo.find({_id: {$nin: user.courses.map(course => course.course)}});
 
+                    res.status(HttpStatus.OK).json({
+                        stundetCourses: studentCourses,
+                        otherCourses: otherCourses
+                    });
                 }
-
-                res.status(HttpStatus.OK).send(user);
-            } else {
+            } 
+            else {
                 res.status(HttpStatus.NOT_FOUND).send('User not found!');
             }
         } catch (error) {

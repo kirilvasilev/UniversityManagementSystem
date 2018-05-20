@@ -19,15 +19,15 @@ class CourseRouter {
         this.routes();
     }
 
-    /** Returns the user's data and the schedules he is attending  */
+    /** Returns the course's data and the schedules he is attending  */
     public async GetCourse(req: Request, res: Response) {
         let repo = GetCourseRepo();
         try {
-            let user = await repo.findById(req.params.id);
-            if(user && !user.deleted){
-                res.status(HttpStatus.OK).send(user);
+            let course = await repo.findById(req.params.id);
+            if(course && !course.deleted){
+                res.status(HttpStatus.OK).send(course);
             } else {
-                res.status(HttpStatus.NOT_FOUND).send('User not found!');
+                res.status(HttpStatus.NOT_FOUND).send('Course not found!');
             }
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'GetCourse');
