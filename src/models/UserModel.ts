@@ -10,7 +10,7 @@ export interface IUserModel extends IUMSModel {
     username: String;
     password: String;
     userType: String;  
-    credits: [{
+    courses: [{
         creditScore: Number;
         course: Types.ObjectId;
     }];

@@ -9,7 +9,7 @@ export interface IRead<T> {
   
   export interface IWrite<T> {
     create(item: T): Promise<T>;
-    update(_id: Types.ObjectId, item: T): DocumentQuery<T, Document>;
+    update(_id: string, item: T): DocumentQuery<T, Document>;
     delete(_id: string): DocumentQuery<T, Document>;
   }
   
@@ -29,8 +29,8 @@ export interface IRead<T> {
         return this._model.find({});
     }
   
-    update(_id: Types.ObjectId, item: T) {
-        return this._model.update({ _id: _id }, item);
+    update(_id: string, item: T): DocumentQuery<T, Document> {
+        return this._model.findByIdAndUpdate({ _id: this.toObjectId(_id) }, item);
     }
   
     delete(_id: string) {
@@ -49,7 +49,7 @@ export interface IRead<T> {
         return this._model.find(cond, options);
     }
   
-    private toObjectId(_id: string): Types.ObjectId {
+    public toObjectId(_id: string): Types.ObjectId {
         return Types.ObjectId.createFromHexString(_id);
     }
   

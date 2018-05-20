@@ -32,7 +32,10 @@ class UserRouter {
         let repo = ContainerProvider.provide<RepositoryBase<IUserModel>>('userRepo');
         try {
             let user = await repo.create(req.body);
-
+            res.json({
+                statusCode: 201,
+                user
+            });
         } catch (error) {
             console.log(error.message);
             res.json({statusCode: 500, message: 'Internal problem!'});
@@ -44,35 +47,61 @@ class UserRouter {
         try {
             let user = await repo.findById(req.params.id);
             user.deleted = true;
+            user.deletedAt = new Date(Date.now());
             user = await user.save();
-            res.json({statusCode: 200, message: 'User deleted'});
+            res.json({statusCode: 203, message: 'User deleted'});
         } catch (error) {
             console.log(error.message);
             res.json({statusCode: 500, message: 'Internal problem!'});
         }
     }
 
-    public UpdateUser(req: Request, res: Response): void {
-        
+    public async UpdateUser(req: Request, res: Response) {
+        let repo = ContainerProvider.provide<RepositoryBase<IUserModel>>('userRepo');
+        try {
+            let user = await repo.update(req.params.id, req.body);
+            res.json({statusCode: 202, user});
+        } catch (error) {
+            console.log(error.message);
+            res.json({statusCode: 500, message: 'Internal problem!'});
+        }
     }
 
-    public AddCourse(req: Request, res: Response): void {
-        
+    public async AddCourse(req: Request, res: Response) {
+        let repo = ContainerProvider.provide<RepositoryBase<IUserModel>>('userRepo');
+        try {
+            let user = await repo.findById(req.params.id);
+            user.courses.push({creditScore: 0, course: repo.toObjectId(req.body.courseId)})
+            user = await user.save();
+            res.json({statusCode: 201, message: 'Course added'});
+        } catch (error) {
+            console.log(error.message);
+            res.json({statusCode: 500, message: 'Internal problem!'});
+        }
     }
 
-    public RemoveCourse(req: Request, res: Response): void {
-        
+    public async RemoveCourse(req: Request, res: Response) {
+        let repo = ContainerProvider.provide<RepositoryBase<IUserModel>>('userRepo');
+        try {
+            let courseId = repo.toObjectId(req.body.courseId);
+            let user = await repo.findById(req.params.id);
+            let course = user.courses.find((credit) => credit.course == courseId);
+            user.courses.splice(user.courses.indexOf(course), 1);
+            user = await user.save();
+            res.json({statusCode: 203, message: 'User deleted'});
+        } catch (error) {
+            console.log(error.message);
+            res.json({statusCode: 500, message: 'Internal problem!'});
+        }
     }
-
-
 
     public routes() {
         this.router.get('/:userId', this.GetUser);
         this.router.post('/', this.CreateUser);
-        this.router.put('/', this.UpdateUser);
         this.router.delete('/', this.DeleteUser);
-        this.router.post('/courses/:id', this.AddCourse);
-        this.router.delete('/courses/:id', this.RemoveCourse);
+        this.router.put('/', this.UpdateUser);  
+        this.router.post('/courses/:courseId', this.AddCourse);
+        this.router.delete('/courses/:courseId', this.RemoveCourse);
     }
 }
 
