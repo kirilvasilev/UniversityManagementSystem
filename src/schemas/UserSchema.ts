@@ -48,7 +48,7 @@ class UserSchemaClass extends UMSSchema {
             },
             course: {
                 type: Schema.Types.ObjectId,
-                ref: 'Course'
+                ref: 'course'
             }
 
         }]

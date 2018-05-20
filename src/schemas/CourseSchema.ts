@@ -1,9 +1,10 @@
 import { Schema, model, SchemaDefinition } from 'mongoose';
+import { ICourseModel } from '../models/CourseModel';
 /**
 *Base Course class that provides extensibility
 *
 */
-class Course extends Schema {
+class CourseSchemaClass extends Schema {
     constructor(definitions?: SchemaDefinition) {
         super({...{
         name: {
@@ -13,9 +14,10 @@ class Course extends Schema {
             trim: true
         }, 
         description: String,
-        schedule: [{
+        schedules: [{
             courseDate: {
-                type: Date
+                type: Date,
+                required: true
             },
             courseRoom: {
                 type: String,
@@ -28,10 +30,10 @@ class Course extends Schema {
         },
         lecturer: {
             type: Schema.Types.ObjectId,
-            ref: 'User'
+            ref: 'user'
             }
         }, ...definitions});   
     }
 }
 
-export default model('Course', new Course());
+export let CourseSchema =  model<ICourseModel>('course', new CourseSchemaClass(), 'courses');

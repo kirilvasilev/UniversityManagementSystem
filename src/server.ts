@@ -7,6 +7,7 @@ import compression from 'compression';
 import cors from 'cors';
 
 import UserRouter from './routes/UserRouter';
+import CourseRouter from './routes/CourseRouter';
 
 class Server {
 
@@ -43,11 +44,8 @@ class Server {
     }
 
     public routes(): void {
-        let router: express.Router;
-        router = express.Router();
         this.app.use('/api/v1/user', UserRouter);
-        this.app.use('/', router);
-       
+        this.app.use('/api/v1/course', CourseRouter);     
     }
 }
 export default new Server().app;

@@ -1,9 +1,7 @@
-import { Router, Request, Response, NextFunction } from 'express';
+import { Router, Request, Response } from 'express';
 import  * as HttpStatus  from 'http-status-codes';
 
 import { GetUserRepo } from '../container/ContainerProvider';
-import { RepositoryBase } from '../repositories/RepositoryBase';
-import { IUserModel } from '../models/UserModel';
 import { handleError } from '../handlers/ErrorHandler';
 import { log, LogLevel } from '../logger/ILogger';
 
@@ -117,7 +115,7 @@ class UserRouter {
         let repo = GetUserRepo();
         try {
             let user = await repo.findById(req.params.id);
-            user.courses.push({creditScore: 0, course: repo.toObjectId(req.body.courseId)})
+            user.courses.push({creditScore: 0, course: repo.toObjectId(req.body.id)})
             user = await user.save();
             res.status(HttpStatus.CREATED).send('Course added');
         } catch (error) {
@@ -128,7 +126,7 @@ class UserRouter {
     public async RemoveCourse(req: Request, res: Response) {
         let repo = GetUserRepo();
         try {
-            let courseId = repo.toObjectId(req.body.courseId);
+            let courseId = repo.toObjectId(req.body.id);
             let user = await repo.findById(req.params.id);
             let course = user.courses.find((credit) => credit.course == courseId);
             user.courses.splice(user.courses.indexOf(course), 1);

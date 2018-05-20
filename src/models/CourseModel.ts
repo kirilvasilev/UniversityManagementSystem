@@ -5,7 +5,7 @@ import { IUMSModel } from './IUMSModel';
 export interface ICourseModel extends IUMSModel {
     name: String;
     description: String;
-    schedule: [{
+    schedules: [{
         courseDate: Date;
         courseRoom: String;
     }];
