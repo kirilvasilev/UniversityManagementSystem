@@ -2,54 +2,54 @@ import { Router, Request, Response, NextFunction } from 'express';
 import { UserRepository } from '../repositories/UserRepository';
 import { RepositoryBase } from '../repositories/RepositoryBase';
 import { IUserModel } from '../models/UserModel';
+import { ContainerProvider } from '../container/ContainerProvider';
 
 class UserRouter {
 
     public router: Router;
-    private repo: RepositoryBase<IUserModel>;
-    constructor(repo: RepositoryBase<IUserModel>) {
+    constructor() {
         this.router = Router();
-        this.repo = repo;
         this.routes();
     }
 
     /** Returns the user's data and the courses he is attending  */
-    public GetUser(req: Request, res: Response) {
-        this.repo.findById(req.params.id)
-        .then(data => {
+    public async GetUser(req: Request, res: Response) {
+        let repo = ContainerProvider.provide<RepositoryBase<IUserModel>>('userRepo');
+        try {
+            let data = await repo.findById(req.params.userId);
             const status = res.statusCode;
             res.json({
                 status,
                 data
             });
-        })
-        .catch(err => {
-            const status = res.statusCode;
-            res.json({
-                status,
-                err
-            });
-        });
+        } catch (error) {
+            console.log(error.message);
+            res.json({statusCode: 500, message: 'Internal problem!'});
+        }        
     }
 
-    public CreateUser(req: Request, res: Response): void {
-        this.repo.create(req.body);
+    public async CreateUser(req: Request, res: Response) {
+        let repo = ContainerProvider.provide<RepositoryBase<IUserModel>>('userRepo');
+        try {
+            let user = await repo.create(req.body);
+
+        } catch (error) {
+            console.log(error.message);
+            res.json({statusCode: 500, message: 'Internal problem!'});
+        }       
     }
 
-    public DeleteUser(req: Request, res: Response): void {
-        this.repo.findById(req.params.id)
-        .then(user => {
+    public async DeleteUser(req: Request, res: Response) {
+        let repo = ContainerProvider.provide<RepositoryBase<IUserModel>>('userRepo');
+        try {
+            let user = await repo.findById(req.params.id);
             user.deleted = true;
-            user.save()
-            .then(user => {
-                const status = res.statusCode;
-                res.json({status, user})
-            })
-            .catch(err => {
-                const status = res.statusCode;
-                res.json({status, user})
-            })
-        });
+            user = await user.save();
+            res.json({statusCode: 200, message: 'User deleted'});
+        } catch (error) {
+            console.log(error.message);
+            res.json({statusCode: 500, message: 'Internal problem!'});
+        }
     }
 
     public UpdateUser(req: Request, res: Response): void {
@@ -78,4 +78,4 @@ class UserRouter {
 
 // export
 
-export default new UserRouter(new UserRepository()).router;
+export default new UserRouter().router;

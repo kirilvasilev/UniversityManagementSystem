@@ -3,6 +3,7 @@ import debug from 'debug';
 import * as http from 'http';
 
 import Server from './server';
+import { ContainerProvider } from './container/ContainerProvider';
 
 debug('ts-express:server');
 
@@ -13,6 +14,9 @@ const server = http.createServer(Server);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
+
+ContainerProvider.registerProviders();
 
 function normalizePort(val: number|string): number|string|boolean {
   const port: number = (typeof val === 'string') ? parseInt(val, 10) : val;

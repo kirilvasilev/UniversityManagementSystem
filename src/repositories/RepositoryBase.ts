@@ -38,7 +38,7 @@ export interface IRead<T> {
     }
   
     findById(_id: string): DocumentQuery<T, Document> {
-        return this._model.findById(_id);
+        return this._model.findById(this.toObjectId(_id));
     }
   
     findOne(cond?: Object, callback?: (err: any, res: T) => void): DocumentQuery<T, Document> {
