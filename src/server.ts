@@ -45,9 +45,6 @@ class Server {
     public routes(): void {
         let router: express.Router;
         router = express.Router();
-        // router.get('/',(req, res) => {
-        //     res.render("home", {title: "Home"});
-        // );
         this.app.use('/api/v1/users', UserRouter);
         this.app.use('/', router);
        

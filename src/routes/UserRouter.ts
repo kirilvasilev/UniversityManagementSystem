@@ -25,11 +25,7 @@ class UserRouter {
         let repo = ContainerProvider.provide<RepositoryBase<IUserModel>>('userRepo');
         try {
             let data = await repo.findById(req.params.userId);
-            const status = res.statusCode;
-            res.json({
-                status,
-                data
-            });
+            res.status(HttpStatus.CREATED).send(data);
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'GetUser');
         }        
