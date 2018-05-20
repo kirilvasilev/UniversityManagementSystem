@@ -1,12 +1,20 @@
 import { Router, Request, Response, NextFunction } from 'express';
+import  * as HttpStatus  from 'http-status-codes';
+
 import { UserRepository } from '../repositories/UserRepository';
 import { RepositoryBase } from '../repositories/RepositoryBase';
 import { IUserModel } from '../models/UserModel';
 import { ContainerProvider } from '../container/ContainerProvider';
+import { handleError } from '../handlers/ErrorHandler';
+
+const CONTROLLER_NAME = 'UserRouter';
 
 class UserRouter {
 
+    
+
     public router: Router;
+
     constructor() {
         this.router = Router();
         this.routes();
@@ -23,8 +31,7 @@ class UserRouter {
                 data
             });
         } catch (error) {
-            console.log(error.message);
-            res.json({statusCode: 500, message: 'Internal problem!'});
+            handleError(res, error, CONTROLLER_NAME, 'GetUser');
         }        
     }
 
@@ -32,13 +39,9 @@ class UserRouter {
         let repo = ContainerProvider.provide<RepositoryBase<IUserModel>>('userRepo');
         try {
             let user = await repo.create(req.body);
-            res.json({
-                statusCode: 201,
-                user
-            });
+            res.status(HttpStatus.CREATED).send(user);
         } catch (error) {
-            console.log(error.message);
-            res.json({statusCode: 500, message: 'Internal problem!'});
+            handleError(res, error, CONTROLLER_NAME, 'CreateUser');
         }       
     }
 
@@ -49,10 +52,9 @@ class UserRouter {
             user.deleted = true;
             user.deletedAt = new Date(Date.now());
             user = await user.save();
-            res.json({statusCode: 203, message: 'User deleted'});
+            res.status(HttpStatus.ACCEPTED).send();
         } catch (error) {
-            console.log(error.message);
-            res.json({statusCode: 500, message: 'Internal problem!'});
+            handleError(res, error, CONTROLLER_NAME, 'DeleteUser');
         }
     }
 
@@ -60,10 +62,9 @@ class UserRouter {
         let repo = ContainerProvider.provide<RepositoryBase<IUserModel>>('userRepo');
         try {
             let user = await repo.update(req.params.id, req.body);
-            res.json({statusCode: 202, user});
+            res.status(HttpStatus.ACCEPTED).send(user);
         } catch (error) {
-            console.log(error.message);
-            res.json({statusCode: 500, message: 'Internal problem!'});
+            handleError(res, error, CONTROLLER_NAME, 'UpdateUser');
         }
     }
 
@@ -73,10 +74,9 @@ class UserRouter {
             let user = await repo.findById(req.params.id);
             user.courses.push({creditScore: 0, course: repo.toObjectId(req.body.courseId)})
             user = await user.save();
-            res.json({statusCode: 201, message: 'Course added'});
+            res.status(HttpStatus.CREATED).send('Course added');
         } catch (error) {
-            console.log(error.message);
-            res.json({statusCode: 500, message: 'Internal problem!'});
+            handleError(res, error, CONTROLLER_NAME, 'AddCourse');
         }
     }
 
@@ -88,10 +88,9 @@ class UserRouter {
             let course = user.courses.find((credit) => credit.course == courseId);
             user.courses.splice(user.courses.indexOf(course), 1);
             user = await user.save();
-            res.json({statusCode: 203, message: 'User deleted'});
+            res.status(HttpStatus.ACCEPTED).send('User deleted');
         } catch (error) {
-            console.log(error.message);
-            res.json({statusCode: 500, message: 'Internal problem!'});
+            handleError(res, error, CONTROLLER_NAME, 'RemoveCourse');
         }
     }
 
