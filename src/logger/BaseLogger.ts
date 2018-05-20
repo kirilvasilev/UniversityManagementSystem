@@ -21,6 +21,6 @@ export class BaseLogger implements ILogger {
             msgColor = '\x1b[32m';
                 break;
         }
-        console.log(`\x1b[35m${new Date().toUTCString()} \x1b[34m${controller ===undefined ? '' : `[${controller}]`}\x1b[34m${method ===undefined ? '' : `${controller ===undefined ? '' : '.'}[${method}]: `}${msgColor}\'${message}\'`);
+        console.log(`\x1b[35m${new Date().toUTCString()} \x1b[34m${controller ===undefined ? '' : `[${controller}]`}\x1b[34m${method ===undefined ? '' : `${controller ===undefined ? '' : '.'}[${method}]: `}${msgColor}${message}`);
     }
 }

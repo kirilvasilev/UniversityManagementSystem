@@ -30,7 +30,7 @@ export interface IRead<T> {
     }
   
     update(_id: string, item: T): DocumentQuery<T, Document> {
-        return this._model.findByIdAndUpdate({ _id: this.toObjectId(_id) }, item);
+        return this._model.findByIdAndUpdate({ _id: this.toObjectId(_id) }, item, {new:true});
     }
   
     delete(_id: string) {
@@ -41,8 +41,8 @@ export interface IRead<T> {
         return this._model.findById(this.toObjectId(_id));
     }
   
-    findOne(cond?: Object, callback?: (err: any, res: T) => void): DocumentQuery<T, Document> {
-        return this._model.findOne(cond, callback);
+    findOne(cond?: Object): DocumentQuery<T, Document> {
+        return this._model.findOne(cond);
     }
     
     find(cond?: Object, fields?: Object, options?: Object): DocumentQuery<T[], Document> {

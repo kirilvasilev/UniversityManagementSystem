@@ -7,7 +7,6 @@ import { IUserModel } from '../models/UserModel';
 *
 */
 class UserSchemaClass extends UMSSchema {
-    userDefinitions: SchemaDefinition;
     constructor(definitions?: SchemaDefinition) {
         super({...{
             name: {
@@ -45,12 +44,10 @@ class UserSchemaClass extends UMSSchema {
         credits: [{
             creditScore: {
                 type: Number,
-                required: function() { return this.userType == 'STUDENT'; },
                 default: 0
             },
             course: {
                 type: Schema.Types.ObjectId,
-                required: function() { return this.userType == 'STUDENT'; },
                 ref: 'Course'
             }
 

@@ -5,13 +5,13 @@ export class UMSSchema extends Schema {
         super({...{
         createdAt: {
             type: Date,
-            default: Date.now()
+            default: new Date()
         },
         deleted: {
             type: Boolean,
             default: false
         },
         deletedAt: Date 
-    }, ...definitions});   
+    }, ...definitions}, { strict: "throw" });   
     }
 }

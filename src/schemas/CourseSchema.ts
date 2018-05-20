@@ -4,7 +4,6 @@ import { Schema, model, SchemaDefinition } from 'mongoose';
 *
 */
 class Course extends Schema {
-    userDefinitions: SchemaDefinition;
     constructor(definitions?: SchemaDefinition) {
         super({...{
         name: {
@@ -19,11 +18,13 @@ class Course extends Schema {
                 type: Date
             },
             courseRoom: {
-                type: String
+                type: String,
+                required: true
             }
         }],
         credits: {
-            type: Number
+            type: Number,
+            required: true
         },
         lecturer: {
             type: Schema.Types.ObjectId,
