@@ -37,11 +37,12 @@ class UserSchemaClass extends UMSSchema {
             min: 6
         },
         userType: {
-            type: String,
-            enum: ['STUDENT', 'LECTURER'],
-            default: 'STUDENT'
+            type: Number,
+            default: 0,
+            min: 0,
+            max: 1
         },  
-        credits: [{
+        courses: [{
             creditScore: {
                 type: Number,
                 default: 0
@@ -52,12 +53,6 @@ class UserSchemaClass extends UMSSchema {
             }
 
         }]
-        // ,
-        // courses: [{
-        //     type: Schema.Types.ObjectId,
-        //     required: function() { return this.userType == 'STUDENT';    },
-        //     ref: 'Course'
-        //     }]
         }, ...definitions});   
     }
 }

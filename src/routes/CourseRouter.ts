@@ -52,7 +52,7 @@ class CourseRouter {
             course.deleted = true;
             course.deletedAt = new Date();
             course = await course.save();
-            res.status(HttpStatus.ACCEPTED).send();
+            res.sendStatus(HttpStatus.ACCEPTED);
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'DeleteCourse');
         }
@@ -74,7 +74,7 @@ class CourseRouter {
                 res.status(HttpStatus.ACCEPTED).send(course);
             } 
             else {
-                res.status(HttpStatus.NOT_FOUND).send('Course not found!');
+                res.sendStatus(HttpStatus.NOT_FOUND);
             }
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'UpdateCourse');
@@ -92,10 +92,10 @@ class CourseRouter {
             if(!schedule){
                 course.schedules.push(req.body)
                 course = await course.save();
-                res.status(HttpStatus.CREATED).send('Schedule added');
+                res.sendStatus(HttpStatus.CREATED);
             }
             else{
-                res.status(HttpStatus.CONFLICT).send('Schedule already exists');
+                res.sendStatus(HttpStatus.CONFLICT);
 
             }           
         } catch (error) {
@@ -106,14 +106,14 @@ class CourseRouter {
     public async RemoveSchedule(req: Request, res: Response) {
         let repo = GetCourseRepo();
         try {
-            let courseId = repo.toObjectId(req.body.id);
+            let courseId = repo.toObjectId(req.params.id);
             let course = await repo.findById(req.params.id);
             let schedule = course.schedules.find((schedule) => {
                 return schedule.courseDate == req.body.CourseDate && 
                 schedule.courseRoom == req.body.courseRoom} 
             );            course.schedules.splice(course.schedules.indexOf(schedule), 1);
             course = await course.save();
-            res.status(HttpStatus.ACCEPTED).send('Schedule deleted');
+            res.sendStatus(HttpStatus.ACCEPTED);
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'RemoveSchedule');
         }
@@ -125,8 +125,8 @@ class CourseRouter {
         this.router.delete('/:id', this.DeleteCourse);
         this.router.put('/:id', this.UpdateCourse);  
 
-        this.router.post('/:id/schedule/', this.AddSchedule);
-        this.router.delete('/:id/schedule/', this.RemoveSchedule);
+        this.router.post('/:id/schedules/', this.AddSchedule);
+        this.router.delete('/:id/schedules/', this.RemoveSchedule);
     }
 }
 

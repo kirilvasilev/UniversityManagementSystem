@@ -19,19 +19,19 @@ export class ContainerProvider {
          // Register the UserRepository
         this.container.register({
         //testService: asClass(TestService),
-        userRepo: asClass(UserRepository).classic()
+            userRepo: asClass(UserRepository).classic()
         });
 
         // Register the CourseRepository
         this.container.register({
             //testService: asClass(TestService),
-            userRepo: asClass(CourseRepository).classic()
-            });
+            courseRepo: asClass(CourseRepository).classic()
+        });
 
         // Register the Logger
         this.container.register({
             logger: asClass(BaseLogger).classic()
-            });
+        });
 
     };
 
@@ -56,6 +56,6 @@ export function GetUserRepo(): RepositoryBase<IUserModel>{
  * Provires a repository using the ICourseModel interface
  */
 export function GetCourseRepo(): RepositoryBase<ICourseModel>{
-    return ContainerProvider.provide<RepositoryBase<ICourseModel>>('userRepo');
+    return ContainerProvider.provide<RepositoryBase<ICourseModel>>('courseRepo');
 }
   

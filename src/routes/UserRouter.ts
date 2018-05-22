@@ -4,6 +4,7 @@ import  * as HttpStatus  from 'http-status-codes';
 import { GetUserRepo, GetCourseRepo } from '../container/ContainerProvider';
 import { handleError } from '../handlers/ErrorHandler';
 import { log, LogLevel } from '../logger/ILogger';
+import { UserType } from '../models/UserModel';
 
 
 const CONTROLLER_NAME = 'UserRouter';
@@ -27,7 +28,7 @@ class UserRouter {
             if(user && !user.deleted){
                 res.status(HttpStatus.OK).send(user);
             } else {
-                res.status(HttpStatus.NOT_FOUND).send('User not found!');
+                res.sendStatus(HttpStatus.NOT_FOUND);
             }
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'GetUser');
@@ -52,7 +53,7 @@ class UserRouter {
             user.deleted = true;
             user.deletedAt = new Date();
             user = await user.save();
-            res.status(HttpStatus.ACCEPTED).send();
+            res.sendStatus(HttpStatus.ACCEPTED);
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'DeleteUser');
         }
@@ -71,7 +72,7 @@ class UserRouter {
                 }
 
                 // Mongoose schema validation fails for enum types
-               if(req.body.userType && ['STUDENT', 'LECTURER'].indexOf(req.body.userType) < 0){
+               if(req.body.userType){
                 
                 log(`Unauthorized action. Invalid userType property: ${req.body.userType}`, CONTROLLER_NAME, 'UpdateUser', LogLevel.Warning);
                 delete req.body.userType;
@@ -82,7 +83,7 @@ class UserRouter {
                 res.status(HttpStatus.ACCEPTED).send(user);
             } 
             else {
-                res.status(HttpStatus.NOT_FOUND).send('User not found!');
+                res.sendStatus(HttpStatus.NOT_FOUND);
             }
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'UpdateUser');
@@ -98,7 +99,7 @@ class UserRouter {
 
                 let courseRepo = GetCourseRepo();
 
-                if(user.userType == 'LECTURER'){
+                if(user.userType == UserType.Lecturer){
                    let lecturerCourses = await courseRepo.find({lecturer: {$in: user._id}});
                    let hangingCourses = await courseRepo.find({lecturer: null});
                    
@@ -118,7 +119,7 @@ class UserRouter {
                 }
             } 
             else {
-                res.status(HttpStatus.NOT_FOUND).send('User not found!');
+                res.sendStatus(HttpStatus.NOT_FOUND);
             }
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'GetUserCourses');
@@ -131,7 +132,7 @@ class UserRouter {
             let user = await repo.findById(req.params.id);
             user.courses.push({creditScore: 0, course: repo.toObjectId(req.body.id)})
             user = await user.save();
-            res.status(HttpStatus.CREATED).send('Course added');
+            res.status(HttpStatus.CREATED).send(user);
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'AddCourse');
         }
@@ -145,7 +146,7 @@ class UserRouter {
             let course = user.courses.find((credit) => credit.course == courseId);
             user.courses.splice(user.courses.indexOf(course), 1);
             user = await user.save();
-            res.status(HttpStatus.ACCEPTED).send('User deleted');
+            res.sendStatus(HttpStatus.ACCEPTED);
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'RemoveCourse');
         }
