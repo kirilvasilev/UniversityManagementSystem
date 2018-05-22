@@ -90,6 +90,17 @@ class UserRouter {
         }
     }
 
+    public async GetUsers(req: Request, res: Response) {
+        let repo = GetUserRepo();
+        
+        try {
+            let users = await repo.find({deleted: false},'-password -username -deleted').populate('courses');
+            res.status(HttpStatus.OK).send(users);
+        } catch (error) {
+            handleError(res, error, CONTROLLER_NAME, 'GetUsers');
+        }
+    }
+
     public async GetUserCourses(req: Request, res: Response) {
         let repo = GetUserRepo();
         
@@ -157,10 +168,11 @@ class UserRouter {
         this.router.post('/', this.CreateUser);
         this.router.delete('/:id', this.DeleteUser);
         this.router.put('/:id', this.UpdateUser);  
+        this.router.get('/', this.GetUsers);
 
         this.router.get('/:id/courses', this.GetUserCourses);
-        this.router.post('/:id/course/', this.AddCourse);
-        this.router.delete('/:id/course/', this.RemoveCourse);
+        this.router.post('/:id/courses/', this.AddCourse);
+        this.router.delete('/:id/courses/', this.RemoveCourse);
     }
 }
 

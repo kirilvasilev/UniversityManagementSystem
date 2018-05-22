@@ -46,7 +46,7 @@ export interface IRead<T> {
     }
     
     find(cond?: Object, fields?: Object, options?: Object): DocumentQuery<T[], Document> {
-        return this._model.find(cond, options);
+        return this._model.find(cond, fields, options);
     }
   
     public toObjectId(_id: string): Types.ObjectId {
