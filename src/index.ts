@@ -1,7 +1,8 @@
 
 import debug from 'debug';
 import * as http from 'http';
-
+import fs from 'fs';
+import spdy from 'spdy';
 import Server from './server';
 import { ContainerProvider } from './container/ContainerProvider';
 import { log, LogLevel } from './logger/ILogger';
@@ -10,11 +11,15 @@ debug('ts-express:server');
 
 const port = normalizePort(process.env.PORT || 3000);
 Server.set('port', port);
+const options = {
+  key: fs.readFileSync(__dirname + '/server.key'),
+  cert:  fs.readFileSync(__dirname + '/server.crt')
+}
 
-const server = http.createServer(Server);
-server.listen(port);
-server.on('error', onError);
-server.on('listening', onListening);
+ const server = spdy.createServer(options, Server);
+ server.listen(port);
+ server.on('error', onError);
+ server.on('listening', onListening);
 
 
 ContainerProvider.registerProviders();
