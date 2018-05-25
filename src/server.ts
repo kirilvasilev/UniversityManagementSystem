@@ -5,6 +5,7 @@ import logger from 'morgan';
 import helmet from 'helmet';
 import compression from 'compression';
 import cors from 'cors';
+import path from 'path';
 
 import UserRouter from './routes/UserRouter';
 import CourseRouter from './routes/CourseRouter';
@@ -42,11 +43,19 @@ class Server {
         this.app.use(compression());
         this.app.use(helmet());
         this.app.use(cors());
+
+        // Point static path to dist
+        this.app.use(express.static(path.join(__dirname, 'app')));
+        // Catch all other routes and return the index file
+
     }
 
     public routes(): void {
         this.app.use('/api/v1/users', UserRouter);
-        this.app.use('/api/v1/courses', CourseRouter);     
+        this.app.use('/api/v1/courses', CourseRouter);
+        this.app.get('*', (req, res) => {
+            res.sendFile(path.join(__dirname, 'app/index.html'));
+        });       
     }
 }
 export default new Server().app;
