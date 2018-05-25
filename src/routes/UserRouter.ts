@@ -11,8 +11,6 @@ const CONTROLLER_NAME = 'UserRouter';
 
 class UserRouter {
 
-    
-
     public router: Router;
 
     constructor() {

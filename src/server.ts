@@ -10,6 +10,7 @@ import path from 'path';
 import UserRouter from './routes/UserRouter';
 import CourseRouter from './routes/CourseRouter';
 import { LogLevel, log } from './logger/ILogger';
+import IndexRouter from './routes/IndexRouter';
 
 class Server {
 
@@ -51,11 +52,26 @@ class Server {
     }
 
     public routes(): void {
+        this.app.get('/', IndexRouter);
         this.app.use('/api/v1/users', UserRouter);
-        this.app.use('/api/v1/courses', CourseRouter);
-        this.app.get('*', (req, res) => {
-            res.sendFile(path.join(__dirname, 'app/index.html'));
-        });       
+        this.app.use('/api/v1/courses', CourseRouter); 
+        }
+        // this.app.get('/pushy', (req, res) => {
+        //     var stream = res.push('/main.js', {
+        //       status: 200, // optional
+        //       method: 'GET', // optional
+        //       request: {
+        //         accept: '*/*'
+        //       },
+        //       response: {
+        //         'content-type': 'application/javascript'
+        //       }
+        //     })
+        //     stream.on('error', function() {
+        //     })
+        //     stream.end('alert("hello from push stream!");')
+        //     res.end('<script src="/main.js"></script>')
+        //   });        
     }
 }
 export default new Server().app;
