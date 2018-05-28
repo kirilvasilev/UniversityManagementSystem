@@ -46,16 +46,16 @@ class Server {
         this.app.use(cors());
 
         // Point static path to dist
-        this.app.use(express.static(path.join(__dirname, 'app')));
+        //this.app.use(express.static(path.join(__dirname, 'app')));
         // Catch all other routes and return the index file
 
     }
 
     public routes(): void {
-        this.app.get('/', IndexRouter);
+        
         this.app.use('/api/v1/users', UserRouter);
         this.app.use('/api/v1/courses', CourseRouter); 
-        }
+        this.app.get('**', IndexRouter);
         // this.app.get('/pushy', (req, res) => {
         //     var stream = res.push('/main.js', {
         //       status: 200, // optional

@@ -26,10 +26,10 @@ const options: spdy.ServerOptions = {
     'x-forwarded-for': true,
 
     connection: {
-      windowSize: 1024 * 1024, // Server's window size
+      //windowSize: 1024 * 1024, // Server's window size
 
       // **optional** if true - server will send 3.1 frames on 3.0 *plain* spdy
-      autoSpdy31: false
+      autoSpdy31: true
     }
   }
 }
