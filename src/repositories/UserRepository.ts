@@ -3,10 +3,9 @@ import { RepositoryBase } from './RepositoryBase';
 import { UserSchema } from '../schemas/UserSchema'
 
 export class UserRepository extends RepositoryBase<IUserModel> {
-    constructor() {
-      super(UserSchema);
-    }
+  constructor() {
+    super(UserSchema);
   }
-  
-  Object.seal(UserRepository);
-  
+}
+
+Object.seal(UserRepository);

@@ -4,10 +4,9 @@ import { CourseSchema } from '../schemas/CourseSchema'
 import { ICourseModel } from '../models/CourseModel';
 
 export class CourseRepository extends RepositoryBase<ICourseModel> {
-    constructor() {
-      super(CourseSchema);
-    }
+  constructor() {
+    super(CourseSchema);
   }
-  
-  Object.seal(CourseRepository);
-  
+}
+
+Object.seal(CourseRepository);

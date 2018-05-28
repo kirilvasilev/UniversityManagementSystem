@@ -10,12 +10,12 @@ import { log, LogLevel } from './logger/ILogger';
 debug('ts-express:server');
 
 const port = normalizePort(process.env.PORT || 3000);
-Server.set('port', port); 
+Server.set('port', port);
 const options: spdy.ServerOptions = {
   key: fs.readFileSync(__dirname + '/server.key'),
-  cert:  fs.readFileSync(__dirname + '/server.crt'),
+  cert: fs.readFileSync(__dirname + '/server.crt'),
   spdy: {
-    protocols: [ 'h2', 'spdy/3.1', 'http/1.1' ],
+    protocols: ['h2', 'spdy/3.1', 'http/1.1'],
     plain: false,
 
     // **optional**
@@ -34,15 +34,15 @@ const options: spdy.ServerOptions = {
   }
 }
 
- const server = spdy.createServer(options, Server);
- server.listen(port);
- server.on('error', onError);
- server.on('listening', onListening);
+const server = spdy.createServer(options, Server);
+server.listen(port);
+server.on('error', onError);
+server.on('listening', onListening);
 
 
 ContainerProvider.registerProviders();
 
-function normalizePort(val: number|string): number|string|boolean {
+function normalizePort(val: number | string): number | string | boolean {
   const port: number = (typeof val === 'string') ? parseInt(val, 10) : val;
   if (isNaN(port)) { return val; } else if (port >= 0) { return port; } else { return false; }
 }
@@ -67,6 +67,6 @@ function onError(error: NodeJS.ErrnoException): void {
 function onListening(): void {
   const addr = server.address();
   const bind = (typeof addr === 'string') ? `pipe ${addr}` : `port ${addr.port}`;
-  debug(`Listening on ${bind}`); 
+  debug(`Listening on ${bind}`);
   log(`Server listening on port ${port}`);
 }

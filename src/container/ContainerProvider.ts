@@ -15,10 +15,10 @@ export class ContainerProvider {
     static registerProviders() {
         this.container = createContainer({
             injectionMode: InjectionMode.PROXY
-          });
-         // Register the UserRepository
+        });
+        // Register the UserRepository
         this.container.register({
-        //testService: asClass(TestService),
+            //testService: asClass(TestService),
             userRepo: asClass(UserRepository).classic()
         });
 
@@ -42,20 +42,19 @@ export class ContainerProvider {
     static provide<T>(dep: string): T {
         return this.container.resolve<T>(dep);
     }
-   
+
 };
 
 /**
  * Provires a repository using the IUserModel interface
  */
-export function GetUserRepo(): RepositoryBase<IUserModel>{
+export function GetUserRepo(): RepositoryBase<IUserModel> {
     return ContainerProvider.provide<RepositoryBase<IUserModel>>('userRepo');
 }
 
 /**
  * Provires a repository using the ICourseModel interface
  */
-export function GetCourseRepo(): RepositoryBase<ICourseModel>{
+export function GetCourseRepo(): RepositoryBase<ICourseModel> {
     return ContainerProvider.provide<RepositoryBase<ICourseModel>>('courseRepo');
 }
-  

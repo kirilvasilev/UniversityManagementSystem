@@ -2,7 +2,7 @@ import { Types } from 'mongoose';
 
 import { IUMSModel } from './IUMSModel';
 
-export enum UserType {Student = 0, Lecturer};
+export enum UserType { Student = 0, Lecturer };
 
 export interface IUserModel extends IUMSModel {
     name: {
@@ -11,7 +11,7 @@ export interface IUserModel extends IUMSModel {
     };
     username: String;
     password: String;
-    userType: UserType;  
+    userType: UserType;
     courses: [{
         creditScore: Number;
         course: Types.ObjectId;

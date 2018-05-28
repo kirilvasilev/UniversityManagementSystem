@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import  * as HttpStatus  from 'http-status-codes';
+import * as HttpStatus from 'http-status-codes';
 
 import { GetUserRepo, GetCourseRepo } from '../container/ContainerProvider';
 import { handleError } from '../handlers/ErrorHandler';
@@ -23,14 +23,14 @@ class UserRouter {
         let repo = GetUserRepo();
         try {
             let user = await repo.findById(req.params.id);
-            if(user && !user.deleted){
+            if (user && !user.deleted) {
                 res.status(HttpStatus.OK).send(user);
             } else {
                 res.sendStatus(HttpStatus.NOT_FOUND);
             }
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'GetUser');
-        }        
+        }
     }
 
     public async CreateUser(req: Request, res: Response) {
@@ -41,7 +41,7 @@ class UserRouter {
             res.status(HttpStatus.CREATED).send(user);
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'CreateUser');
-        }       
+        }
     }
 
     public async DeleteUser(req: Request, res: Response) {
@@ -61,25 +61,25 @@ class UserRouter {
         let repo = GetUserRepo();
         try {
             let user = await repo.findById(req.params.id);
-            if(user && !user.deleted){
+            if (user && !user.deleted) {
 
                 //Deleting object is only performet with the DETETE verb
-                if(req.body.deleted){
+                if (req.body.deleted) {
                     delete req.body.deleted;
                     log('Unauthorized action. Can\'t delete user here!', CONTROLLER_NAME, 'UpdateUser', LogLevel.Warning);
                 }
 
                 // Mongoose schema validation fails for enum types
-               if(req.body.userType){
-                
-                log(`Unauthorized action. Invalid userType property: ${req.body.userType}`, CONTROLLER_NAME, 'UpdateUser', LogLevel.Warning);
-                delete req.body.userType;
-               }
+                if (req.body.userType) {
+
+                    log(`Unauthorized action. Invalid userType property: ${req.body.userType}`, CONTROLLER_NAME, 'UpdateUser', LogLevel.Warning);
+                    delete req.body.userType;
+                }
                 //TODO: Check if authorized to update userType!
 
                 user = await repo.update(req.params.id, req.body);
                 res.status(HttpStatus.ACCEPTED).send(user);
-            } 
+            }
             else {
                 res.sendStatus(HttpStatus.NOT_FOUND);
             }
@@ -90,9 +90,9 @@ class UserRouter {
 
     public async GetUsers(req: Request, res: Response) {
         let repo = GetUserRepo();
-        
+
         try {
-            let users = await repo.find({deleted: false},'-password -username -deleted').populate('courses');
+            let users = await repo.find({ deleted: false }, '-password -username -deleted').populate('courses');
             res.status(HttpStatus.OK).send(users);
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'GetUsers');
@@ -101,45 +101,45 @@ class UserRouter {
 
     public async GetUserCourses(req: Request, res: Response) {
         let repo = GetUserRepo();
-        
+
         try {
             let user = await repo.findById(req.params.id);
-            if(user && !user.deleted){
+            if (user && !user.deleted) {
 
                 let courseRepo = GetCourseRepo();
 
-                if(user.userType == UserType.Lecturer){
-                   let lecturerCourses = await courseRepo.find({lecturer: {$in: user._id}});
-                   let hangingCourses = await courseRepo.find({lecturer: null});
-                   
-                   res.status(HttpStatus.OK).json({
-                    lecturerCourses: lecturerCourses,
-                    hangingCourses: hangingCourses
-                });
+                if (user.userType == UserType.Lecturer) {
+                    let lecturerCourses = await courseRepo.find({ lecturer: { $in: user._id } });
+                    let hangingCourses = await courseRepo.find({ lecturer: null });
+
+                    res.status(HttpStatus.OK).json({
+                        lecturerCourses: lecturerCourses,
+                        hangingCourses: hangingCourses
+                    });
                 }
                 else {
-                    let studentCourses = await courseRepo.find({_id: {$in: user.courses.map(course => course.course)}});
-                    let otherCourses = await courseRepo.find({_id: {$nin: user.courses.map(course => course.course)}});
+                    let studentCourses = await courseRepo.find({ _id: { $in: user.courses.map(course => course.course) } });
+                    let otherCourses = await courseRepo.find({ _id: { $nin: user.courses.map(course => course.course) } });
 
                     res.status(HttpStatus.OK).json({
                         stundetCourses: studentCourses,
                         otherCourses: otherCourses
                     });
                 }
-            } 
+            }
             else {
                 res.sendStatus(HttpStatus.NOT_FOUND);
             }
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'GetUserCourses');
-        }        
+        }
     }
 
     public async AddCourse(req: Request, res: Response) {
         let repo = GetUserRepo();
         try {
             let user = await repo.findById(req.params.id);
-            user.courses.push({creditScore: 0, course: repo.toObjectId(req.body.id)})
+            user.courses.push({ creditScore: 0, course: repo.toObjectId(req.body.id) })
             user = await user.save();
             res.status(HttpStatus.CREATED).send(user);
         } catch (error) {
@@ -165,7 +165,7 @@ class UserRouter {
         this.router.get('/:id', this.GetUser);
         this.router.post('/', this.CreateUser);
         this.router.delete('/:id', this.DeleteUser);
-        this.router.put('/:id', this.UpdateUser);  
+        this.router.put('/:id', this.UpdateUser);
         this.router.get('/', this.GetUsers);
 
         this.router.get('/:id/courses', this.GetUserCourses);

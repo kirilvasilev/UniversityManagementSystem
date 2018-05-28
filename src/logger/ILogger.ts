@@ -1,6 +1,6 @@
 import { ContainerProvider } from "../container/ContainerProvider";
 
-export enum LogLevel {Information, Warning, Error};
+export enum LogLevel { Information, Warning, Error };
 
 export interface ILogger {
     log(message: String | any): void;
@@ -10,5 +10,5 @@ export interface ILogger {
 
 export function log(message: any, controller?: any, method?: any, level?: any) {
     const logger = ContainerProvider.provide<ILogger>('logger');
-    logger.log(message, controller, method, level);  
+    logger.log(message, controller, method, level);
 };

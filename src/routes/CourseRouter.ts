@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import  * as HttpStatus  from 'http-status-codes';
+import * as HttpStatus from 'http-status-codes';
 
 import { GetCourseRepo } from '../container/ContainerProvider';
 import { handleError } from '../handlers/ErrorHandler';
@@ -10,7 +10,7 @@ const CONTROLLER_NAME = 'CourseRouter';
 
 class CourseRouter {
 
-    
+
 
     public router: Router;
 
@@ -22,15 +22,15 @@ class CourseRouter {
     public async GetCourses(req: Request, res: Response) {
         let repo = GetCourseRepo();
         try {
-            let courses = await repo.find({deleted: false}, '-deleted -deletedAt').populate('users');
-            if(courses){
+            let courses = await repo.find({ deleted: false }, '-deleted -deletedAt').populate('users');
+            if (courses) {
                 res.status(HttpStatus.OK).send(courses);
             } else {
                 res.sendStatus(HttpStatus.NOT_FOUND);
             }
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'GetCourse');
-        }        
+        }
     }
 
     /** Returns the course's data and the schedules he is attending  */
@@ -38,14 +38,14 @@ class CourseRouter {
         let repo = GetCourseRepo();
         try {
             let course = await repo.findById(req.params.id);
-            if(course && !course.deleted){
+            if (course && !course.deleted) {
                 res.status(HttpStatus.OK).send(course);
             } else {
                 res.sendStatus(HttpStatus.NOT_FOUND);
             }
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'GetCourse');
-        }        
+        }
     }
 
     public async CreateCourse(req: Request, res: Response) {
@@ -56,7 +56,7 @@ class CourseRouter {
             res.status(HttpStatus.CREATED).send(course);
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'CreateCourse');
-        }       
+        }
     }
 
     public async DeleteCourse(req: Request, res: Response) {
@@ -76,17 +76,17 @@ class CourseRouter {
         let repo = GetCourseRepo();
         try {
             let course = await repo.findById(req.params.id);
-            if(course && !course.deleted){
+            if (course && !course.deleted) {
 
                 //Deleting object is only performet with the DETETE verb
-                if(req.body.deleted){
+                if (req.body.deleted) {
                     delete req.body.deleted;
                     log('Unauthorized action. Can\'t delete course here!', CONTROLLER_NAME, 'UpdateCourse', LogLevel.Warning);
                 }
-     
+
                 course = await repo.update(req.params.id, req.body);
                 res.status(HttpStatus.ACCEPTED).send(course);
-            } 
+            }
             else {
                 res.sendStatus(HttpStatus.NOT_FOUND);
             }
@@ -100,17 +100,18 @@ class CourseRouter {
         try {
             let course = await repo.findById(req.params.id);
             let schedule = course.schedules.find((schedule) => {
-                return schedule.courseDate == req.body.CourseDate && 
-                schedule.courseRoom == req.body.courseRoom} 
+                return schedule.courseDate == req.body.CourseDate &&
+                    schedule.courseRoom == req.body.courseRoom
+            }
             );
-            if(!schedule){
+            if (!schedule) {
                 course.schedules.push(req.body)
                 course = await course.save();
                 res.status(HttpStatus.CREATED).send(course);
             }
-            else{
+            else {
                 res.sendStatus(HttpStatus.CONFLICT);
-            }           
+            }
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'AddSchedule');
         }
@@ -121,9 +122,10 @@ class CourseRouter {
         try {
             let course = await repo.findById(req.params.id);
             let schedule = course.schedules.find((schedule) => {
-                return schedule.courseDate == req.body.CourseDate && 
-                schedule.courseRoom == req.body.courseRoom} 
-            );            
+                return schedule.courseDate == req.body.CourseDate &&
+                    schedule.courseRoom == req.body.courseRoom
+            }
+            );
             course.schedules.splice(course.schedules.indexOf(schedule), 1);
             course = await course.save();
             res.status(HttpStatus.ACCEPTED).send(course);
@@ -137,7 +139,7 @@ class CourseRouter {
         this.router.get('/:id', this.GetCourse);
         this.router.post('/', this.CreateCourse);
         this.router.delete('/:id', this.DeleteCourse);
-        this.router.put('/:id', this.UpdateCourse);  
+        this.router.put('/:id', this.UpdateCourse);
 
         this.router.post('/:id/schedules/', this.AddSchedule);
         this.router.delete('/:id/schedules/', this.RemoveSchedule);
