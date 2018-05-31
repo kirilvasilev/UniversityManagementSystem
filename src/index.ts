@@ -3,6 +3,7 @@ import debug from 'debug';
 import * as http from 'http';
 import fs from 'fs';
 import spdy from 'spdy';
+
 import Server from './server';
 import { ContainerProvider } from './container/ContainerProvider';
 import { log, LogLevel } from './logger/ILogger';
@@ -26,7 +27,7 @@ const options: spdy.ServerOptions = {
     'x-forwarded-for': true,
 
     connection: {
-      //windowSize: 1024 * 1024, // Server's window size
+      windowSize: 1024 * 1024, // Server's window size
 
       // **optional** if true - server will send 3.1 frames on 3.0 *plain* spdy
       autoSpdy31: true

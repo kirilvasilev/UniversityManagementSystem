@@ -4,8 +4,10 @@ import { navItems } from './../../_nav';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './default-layout.component.html'
+  //styleUrls: ['./default-layout.component.css']
 })
 export class DefaultLayoutComponent {
+
   public navItems = navItems;
   public sidebarMinimized = true;
   private changes: MutationObserver;
@@ -19,5 +21,7 @@ export class DefaultLayoutComponent {
     this.changes.observe(<Element>this.element, {
       attributes: true
     });
+
+
   }
 }
