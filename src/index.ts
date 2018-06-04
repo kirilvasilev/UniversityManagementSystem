@@ -1,40 +1,50 @@
 
 import debug from 'debug';
-import * as http from 'http';
+import http from 'http';
+import express from 'express';
 import fs from 'fs';
-import spdy from 'spdy';
+
 import Server from './server';
 import { ContainerProvider } from './container/ContainerProvider';
 import { log, LogLevel } from './logger/ILogger';
+
 
 debug('ts-express:server');
 
 const port = normalizePort(process.env.PORT || 3000);
 Server.set('port', port);
-const options: spdy.ServerOptions = {
-  key: fs.readFileSync(__dirname + '/server.key'),
-  cert: fs.readFileSync(__dirname + '/server.crt'),
-  spdy: {
-    protocols: ['h2', 'spdy/3.1', 'http/1.1'],
-    plain: false,
+// const options: any = {
+//   key: fs.readFileSync(__dirname + '/server.key'),
+//   cert: fs.readFileSync(__dirname + '/server.crt'),
+//   spdy: {
+//     protocols: ['h2', 'spdy/3.1', 'http/1.1'],
+//     plain: false,
 
-    // **optional**
-    // Parse first incoming X_FORWARDED_FOR frame and put it to the
-    // headers of every request.
-    // NOTE: Use with care! This should not be used without some proxy that
-    // will *always* send X_FORWARDED_FOR
-    'x-forwarded-for': true,
+//     // **optional**
+//     // Parse first incoming X_FORWARDED_FOR frame and put it to the
+//     // headers of every request.
+//     // NOTE: Use with care! This should not be used without some proxy that
+//     // will *always* send X_FORWARDED_FOR
+//     'x-forwarded-for': true,
 
-    connection: {
-      //windowSize: 1024 * 1024, // Server's window size
+//     connection: {
+//       //windowSize: 1024 * 1024, // Server's window size
 
-      // **optional** if true - server will send 3.1 frames on 3.0 *plain* spdy
-      autoSpdy31: true
-    }
-  }
-}
+//       // **optional** if true - server will send 3.1 frames on 3.0 *plain* spdy
+//       autoSpdy31: true
+//     }
+//   }
+// }
 
-const server = spdy.createServer(options, Server);
+//require('express-http2-workaround')({ express:express, http2:http2, app:Server })
+
+// Setup HTTP/2 Server
+// var httpsOptions = {
+//   'key' : fs.readFileSync(__dirname + '/server.key'),
+//   'cert' : fs.readFileSync(__dirname + '/server.crt'),
+//   'ca' : fs.readFileSync(__dirname + '/server.crt')
+// };
+const server = http.createServer( Server);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);

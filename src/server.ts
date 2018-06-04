@@ -6,6 +6,8 @@ import helmet from 'helmet';
 import compression from 'compression';
 import cors from 'cors';
 import path from 'path';
+import http2 from 'http2';
+import expressHTTP2Workaround from 'express-http2-workaround';
 
 import UserRouter from './routes/UserRouter';
 import CourseRouter from './routes/CourseRouter';
@@ -25,6 +27,7 @@ class Server {
         this.app = express();
         this.config();
         this.routes();
+        expressHTTP2Workaround({ express:express, http2:http2, app:this.app });
     }
 
     public config() {
@@ -39,6 +42,7 @@ class Server {
                 log("MongoDB connection error. Please make sure MongoDB is running. " + err, 'Server', 'config', LogLevel.Error);
                 process.exit();
             });
+           // this.app.use(expressHTTP2Workaround({ express:express, http2:http2 }));
 
         // configure middleware
         this.app.use(bodyParser.urlencoded({
