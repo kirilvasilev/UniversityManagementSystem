@@ -1,10 +1,12 @@
 import { AwilixContainer, createContainer, asClass, InjectionMode } from 'awilix';
 import { UserRepository } from '../repositories/UserRepository';
 import { BaseLogger } from '../logger/BaseLogger';
-import { RepositoryBase } from '../repositories/RepositoryBase';
+import { RepositoryBase, IRepositoryBase } from '../repositories/RepositoryBase';
 import { IUserModel } from '../models/UserModel';
 import { ICourseModel } from '../models/CourseModel';
 import { CourseRepository } from '../repositories/CourseRepository';
+import { RepositoryMock } from '../repositories/RepositoryMock';
+import { IUserModelMock, ICourseModelMock } from '../models/Mocks';
 
 // Create the container and set the injectionMode to PROXY (which is also the default).
 
@@ -18,13 +20,13 @@ export class ContainerProvider {
         });
         // Register the UserRepository
         this.container.register({
-            //testService: asClass(TestService),
+            testService: asClass(RepositoryMock),
             userRepo: asClass(UserRepository).classic()
         });
 
         // Register the CourseRepository
         this.container.register({
-            //testService: asClass(TestService),
+            testService: asClass(RepositoryMock),
             courseRepo: asClass(CourseRepository).classic()
         });
 
@@ -48,13 +50,13 @@ export class ContainerProvider {
 /**
  * Provires a repository using the IUserModel interface
  */
-export function GetUserRepo(): RepositoryBase<IUserModel> {
-    return ContainerProvider.provide<RepositoryBase<IUserModel>>('userRepo');
+export function GetUserRepo(): IRepositoryBase<IUserModelMock> {
+    return ContainerProvider.provide<IRepositoryBase<IUserModelMock>>('testService');
 }
 
 /**
  * Provires a repository using the ICourseModel interface
  */
-export function GetCourseRepo(): RepositoryBase<ICourseModel> {
-    return ContainerProvider.provide<RepositoryBase<ICourseModel>>('courseRepo');
+export function GetCourseRepo(): IRepositoryBase<ICourseModelMock> {
+    return ContainerProvider.provide<IRepositoryBase<ICourseModelMock>>('testService');
 }

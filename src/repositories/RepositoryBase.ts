@@ -5,10 +5,11 @@ export interface IRepositoryBase<T> {
     retrieve(): Promise<T[]>;
     findById(id: string): Promise<T>;
     findOne(cond?: Object): Promise<T>;
-    find(cond: Object, fields: Object, options: Object): Promise<T[]>;
+    find(cond?: Object, fields?: Object, options?: Object, populate?: String): Promise<T[]>;
     create(item: T): Promise<T>;
     update(_id: string, item: T): Promise<T>;
     delete(_id: string): Promise<T>;
+    toObjectId(_id: string): any;
 }
 
 export class RepositoryBase<T extends Document> implements IRepositoryBase<T> {
@@ -43,7 +44,10 @@ export class RepositoryBase<T extends Document> implements IRepositoryBase<T> {
         return this._model.findOne(cond).exec();
     }
 
-    find(cond?: Object, fields?: Object, options?: Object): Promise<T[]> {
+    find(cond?: Object, fields?: Object, options?: Object, populate?: String): Promise<T[]> {
+        if(populate) {
+            return this._model.find(cond, fields, options).populate(populate).exec();
+        }
         return this._model.find(cond, fields, options).exec();
     }
 

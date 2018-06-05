@@ -22,7 +22,7 @@ class CourseRouter {
     public async GetCourses(req: Request, res: Response) {
         let repo = GetCourseRepo();
         try {
-            let courses = await repo.find({ deleted: false }, '-deleted -deletedAt').populate('users');
+            let courses = await repo.find({ deleted: false }, '-deleted -deletedAt', 'users');
             if (courses) {
                 res.status(HttpStatus.OK).send(courses);
             } else {
@@ -100,8 +100,9 @@ class CourseRouter {
         try {
             let course = await repo.findById(req.params.id);
             let schedule = course.schedules.find((schedule) => {
-                return schedule.courseDate == req.body.CourseDate &&
-                    schedule.courseRoom == req.body.courseRoom
+                return schedule.dayOfWeek == req.body.dayOfWeek &&
+                    schedule.time == req.body.time &&
+                    schedule.room == req.body.room
             }
             );
             if (!schedule) {
@@ -122,8 +123,9 @@ class CourseRouter {
         try {
             let course = await repo.findById(req.params.id);
             let schedule = course.schedules.find((schedule) => {
-                return schedule.courseDate == req.body.CourseDate &&
-                    schedule.courseRoom == req.body.courseRoom
+                return schedule.dayOfWeek == req.body.dayOfWeek &&
+                    schedule.time == req.body.time &&
+                    schedule.room == req.body.room
             }
             );
             course.schedules.splice(course.schedules.indexOf(schedule), 1);

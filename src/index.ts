@@ -3,10 +3,6 @@ import debug from 'debug';
 import http from 'http';
 import express from 'express';
 import fs from 'fs';
-<<<<<<< HEAD
-=======
-import spdy from 'spdy';
->>>>>>> 4a9f9e62301ca91df9f576c05f3ec01a704f57b1
 
 import Server from './server';
 import { ContainerProvider } from './container/ContainerProvider';

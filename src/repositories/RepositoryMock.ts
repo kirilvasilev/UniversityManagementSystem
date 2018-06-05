@@ -5,8 +5,6 @@ import { ObjectId } from "bson";
 import { IUserModelMock, ICourseModelMock, BaseMock } from "../models/Mocks";
 
 export class RepositoryMock<T extends BaseMock> implements IRepositoryBase<T>{
-    
-    //private _collection: Array<T>;
 
     /**
      *
@@ -21,11 +19,41 @@ export class RepositoryMock<T extends BaseMock> implements IRepositoryBase<T>{
     findById(id: string): Promise<T> {
         return new Promise<T>((resolve, reject) => resolve(this._collection.find(e => e.id.toString() == id && e.deleted == false)));
     }
-    findOne(cond?: Object): Promise<T> {
-        throw new Error("Method not implemented.");
+    findOne(cond?: any): Promise<T> {
+        var foundItems: Array<T> = [];
+        if(cond != {}) {      
+            this._collection.forEach( (element) => { 
+                let result = false;
+                for (var key in cond) {
+                    result = element[key] === cond[key];
+                    if(!result) break;
+                }
+                if(result) {
+                    foundItems.push(element);
+                }
+            });
+        }
+        return new Promise((resolve, reject) => {
+            return foundItems.length > 0? foundItems[0] : null;
+        });
     }
-    find(cond: Object, fields: Object, options: Object): Promise<T[]> {
-        throw new Error("Method not implemented.");
+    find(cond: any, fields: Object, options: Object): Promise<T[]> {
+        var foundItems: Array<T> = [];
+        if(cond != {}) {      
+            this._collection.forEach( (element) => { 
+                let result = false;
+                for (var key in cond) {
+                    result = element[key] === cond[key];
+                    if(!result) break;
+                }
+                if(result) {
+                    foundItems.push(element);
+                }
+            });
+        }
+        return new Promise((resolve, reject) => {
+            return foundItems.length > 0? foundItems : this._collection;
+        });       
     }
     create(item: T): Promise<T> {
         return new Promise((resolve, reject) => {
@@ -48,6 +76,14 @@ export class RepositoryMock<T extends BaseMock> implements IRepositoryBase<T>{
             item.deletedAt = new Date();
             return resolve(item);
         });
+    }
+
+    public toObjectId(_id: string): Number {
+        return +_id;
+    }
+
+    private prop<T, K extends keyof T>(obj: T, key: K) {
+        return obj[key];
     }
 }
 

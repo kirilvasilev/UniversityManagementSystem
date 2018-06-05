@@ -33,16 +33,7 @@ class UserRouter {
         }
     }
 
-    public async CreateUser(req: Request, res: Response) {
-        let repo = GetUserRepo();
-        try {
-            console.log(req.body);
-            let user = await repo.create(req.body);
-            res.status(HttpStatus.CREATED).send(user);
-        } catch (error) {
-            handleError(res, error, CONTROLLER_NAME, 'CreateUser');
-        }
-    }
+    
 
     public async DeleteUser(req: Request, res: Response) {
         let repo = GetUserRepo();
@@ -92,7 +83,7 @@ class UserRouter {
         let repo = GetUserRepo();
 
         try {
-            let users = await repo.find({ deleted: false }, '-password -username -deleted').populate('courses');
+            let users = await repo.find({ deleted: false }, '-password -username -deleted', 'courses');
             res.status(HttpStatus.OK).send(users);
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'GetUsers');
@@ -163,7 +154,6 @@ class UserRouter {
 
     public routes() {
         this.router.get('/:id', this.GetUser);
-        this.router.post('/', this.CreateUser);
         this.router.delete('/:id', this.DeleteUser);
         this.router.put('/:id', this.UpdateUser);
         this.router.get('/', this.GetUsers);

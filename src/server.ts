@@ -10,6 +10,7 @@ import * as HttpStatus from 'http-status-codes';
 
 import UserRouter from './routes/UserRouter';
 import CourseRouter from './routes/CourseRouter';
+import AuthRouter from './routes/AuthRouter'
 import {
     LogLevel,
     log
@@ -61,6 +62,7 @@ class Server {
 
         this.app.use('/api/v1/users', UserRouter);
         this.app.use('/api/v1/courses', CourseRouter);
+        this.app.use(['/register', '/login'], AuthRouter)
         this.app.get('**', (req, res) => {
             res.sendStatus(HttpStatus.NOT_FOUND);
         });

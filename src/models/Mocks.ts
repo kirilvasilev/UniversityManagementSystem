@@ -35,6 +35,7 @@ export interface Schedule {
 }
 
 export interface BaseMock {
+    [key:string]: any;
     id: Number;
     createdAt: Date;
     deleted: Boolean;
