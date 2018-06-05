@@ -6,8 +6,7 @@ import helmet from 'helmet';
 import compression from 'compression';
 import cors from 'cors';
 import path from 'path';
-import http2 from 'http2';
-import expressHTTP2Workaround from 'express-http2-workaround';
+import * as HttpStatus from 'http-status-codes';
 
 import UserRouter from './routes/UserRouter';
 import CourseRouter from './routes/CourseRouter';
@@ -15,7 +14,7 @@ import {
     LogLevel,
     log
 } from './logger/ILogger';
-import IndexRouter from './routes/IndexRouter';
+//import IndexRouter from './routes/IndexRouter';
 
 class Server {
 
@@ -27,7 +26,7 @@ class Server {
         this.app = express();
         this.config();
         this.routes();
-        expressHTTP2Workaround({ express:express, http2:http2, app:this.app });
+        //expressHTTP2Workaround({ express:express, http2:http2, app:this.app });
     }
 
     public config() {
@@ -55,32 +54,16 @@ class Server {
         this.app.use(cors());
 
         // Point static path to dist
-        //this.app.use(express.static(path.join(__dirname, 'app')));
-        // Catch all other routes and return the index file
-
+        this.app.use(express.static(path.join(__dirname, 'app')));
     }
 
     public routes(): void {
 
         this.app.use('/api/v1/users', UserRouter);
         this.app.use('/api/v1/courses', CourseRouter);
-        this.app.get('**', IndexRouter);
-        // this.app.get('/pushy', (req, res) => {
-        //     var stream = res.push('/main.js', {
-        //       status: 200, // optional
-        //       method: 'GET', // optional
-        //       request: {
-        //         accept: '*/*'
-        //       },
-        //       response: {
-        //         'content-type': 'application/javascript'
-        //       }
-        //     })
-        //     stream.on('error', function() {
-        //     })
-        //     stream.end('alert("hello from push stream!");')
-        //     res.end('<script src="/main.js"></script>')
-        //   });        
+        this.app.get('**', (req, res) => {
+            res.sendStatus(HttpStatus.NOT_FOUND);
+        });
     }
 }
 export default new Server().app;
