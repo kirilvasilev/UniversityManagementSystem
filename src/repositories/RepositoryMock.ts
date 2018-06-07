@@ -106,6 +106,20 @@ export class RepositoryCoursesMock extends RepositoryMock<ICourseModelMock> {
 
 let USERS : IUserModelMock[] = [
     {
+        id: 99999,
+        name: {
+            first: "admin",
+            last: "admin"
+        },
+        username: "admin",
+        password: "admin",
+        userType: UserType.Lecturer,
+        courses: null,
+        createdAt: new Date(),
+        deleted: false,
+        deletedAt: null
+    },
+    {
         id: 1,
         name: {
             first: "Georgi",

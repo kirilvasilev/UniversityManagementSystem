@@ -5,6 +5,7 @@ import jwt from 'jsonwebtoken';
 import { GetUserRepo } from '../container/ContainerProvider';
 import { handleError } from '../handlers/ErrorHandler';
 import { log, LogLevel } from '../logger/ILogger';
+import { UserType } from '../models/UserModel';
 
 
 const CONTROLLER_NAME = 'AuthRouter';
@@ -23,13 +24,14 @@ class AuthRouter {
         let repo = GetUserRepo();
         try {
             let foundUsers = await repo.find({username: req.body.username});
-
+            let users = await repo.find();
             if(foundUsers.length > 0) {
                 res.status(HttpStatus.CONFLICT).json({message: "User already exists."});
             }
             else {
                 let user = await repo.create(req.body);
                 delete user.password;
+                user.userType = users.length > 0 ? UserType.Student : UserType.Lecturer;
                 res.status(HttpStatus.CREATED).json({token: jwt.sign(user, 'SUPERSECRETCODE')});
             }          
         } catch (error) {
