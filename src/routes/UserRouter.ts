@@ -24,9 +24,9 @@ class UserRouter {
         try {
             let user = await repo.findById(req.params.id);
             if (user && !user.deleted) {
-                res.status(HttpStatus.OK).send(user);
+                res.status(HttpStatus.OK).json(user);
             } else {
-                res.sendStatus(HttpStatus.NOT_FOUND);
+                res.status(HttpStatus.NOT_FOUND).json({message: 'User not found.'});
             }
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'GetUser');
@@ -42,7 +42,7 @@ class UserRouter {
             user.deleted = true;
             user.deletedAt = new Date();
             user = await user.save();
-            res.sendStatus(HttpStatus.ACCEPTED);
+            res.status(HttpStatus.ACCEPTED).json({message: 'User deleted.', userId: user.id});
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'DeleteUser');
         }
@@ -69,10 +69,10 @@ class UserRouter {
                 //TODO: Check if authorized to update userType!
 
                 user = await repo.update(req.params.id, req.body);
-                res.status(HttpStatus.ACCEPTED).send(user);
+                res.status(HttpStatus.ACCEPTED).json(user);
             }
             else {
-                res.sendStatus(HttpStatus.NOT_FOUND);
+                res.status(HttpStatus.NOT_FOUND).json({message: 'User not found.'});
             }
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'UpdateUser');
@@ -84,7 +84,7 @@ class UserRouter {
 
         try {
             let users = await repo.find({ deleted: false }, '-password -username -deleted', 'courses');
-            res.status(HttpStatus.OK).send(users);
+            res.status(HttpStatus.OK).json(users);
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'GetUsers');
         }
@@ -119,7 +119,7 @@ class UserRouter {
                 }
             }
             else {
-                res.sendStatus(HttpStatus.NOT_FOUND);
+                res.status(HttpStatus.NOT_FOUND).json({message: 'User not found.'});
             }
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'GetUserCourses');
@@ -132,7 +132,7 @@ class UserRouter {
             let user = await repo.findById(req.params.id);
             user.courses.push({ creditScore: 0, course: repo.toObjectId(req.body.id) })
             user = await user.save();
-            res.status(HttpStatus.CREATED).send(user);
+            res.status(HttpStatus.CREATED).json(user);
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'AddCourse');
         }
@@ -146,7 +146,7 @@ class UserRouter {
             let course = user.courses.find((credit) => credit.course == courseId);
             user.courses.splice(user.courses.indexOf(course), 1);
             user = await user.save();
-            res.sendStatus(HttpStatus.ACCEPTED);
+            res.status(HttpStatus.ACCEPTED).json({message: 'Course removed.'});
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'RemoveCourse');
         }

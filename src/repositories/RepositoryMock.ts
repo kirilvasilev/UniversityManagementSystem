@@ -3,6 +3,7 @@ import { IRepositoryBase } from "./RepositoryBase";
 import { Types } from "mongoose";
 import { ObjectId } from "bson";
 import { IUserModelMock, ICourseModelMock, BaseMock } from "../models/Mocks";
+import { LENGTH_REQUIRED } from "http-status-codes";
 
 export class RepositoryMock<T extends BaseMock> implements IRepositoryBase<T>{
 
@@ -34,7 +35,7 @@ export class RepositoryMock<T extends BaseMock> implements IRepositoryBase<T>{
             });
         }
         return new Promise((resolve, reject) => {
-            return foundItems.length > 0? foundItems[0] : null;
+            return resolve(foundItems[0]);
         });
     }
     find(cond: any, fields: Object, options: Object): Promise<T[]> {
@@ -51,12 +52,12 @@ export class RepositoryMock<T extends BaseMock> implements IRepositoryBase<T>{
                 }
             });
         }
-        return new Promise((resolve, reject) => {
-            return foundItems.length > 0? foundItems : this._collection;
-        });       
+        return new Promise((resolve, reject) => resolve(foundItems));       
     }
     create(item: T): Promise<T> {
         return new Promise((resolve, reject) => {
+            item.id = Math.floor(Math.random() * Math.floor(12451513212));
+            item.createdAt = new Date();
             this._collection.push(item);
             return resolve(item);
         });
@@ -81,13 +82,29 @@ export class RepositoryMock<T extends BaseMock> implements IRepositoryBase<T>{
     public toObjectId(_id: string): Number {
         return +_id;
     }
+}
 
-    private prop<T, K extends keyof T>(obj: T, key: K) {
-        return obj[key];
+export class RepositoryUsersMock extends RepositoryMock<IUserModelMock> {
+    /**
+     *
+     */
+    constructor() {
+        super(USERS);
+        
     }
 }
 
-let USERS : Array<IUserModelMock> = [
+export class RepositoryCoursesMock extends RepositoryMock<ICourseModelMock> {
+    /**
+     *
+     */
+    constructor() {
+        super(COURSES);
+        
+    }
+}
+
+let USERS : IUserModelMock[] = [
     {
         id: 1,
         name: {
@@ -204,7 +221,7 @@ let COURSES : Array<ICourseModelMock> = [
     },
     {
         id: 2,
-        name: "Informatika",
+        name: "Statistika",
         description: "",
         schedules: [{
             dayOfWeek: 1,
@@ -229,7 +246,7 @@ let COURSES : Array<ICourseModelMock> = [
     },
     {
         id: 3,
-        name: "Informatika",
+        name: "Matematika",
         description: "",
         schedules: [{
             dayOfWeek: 1,

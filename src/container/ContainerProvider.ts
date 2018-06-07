@@ -5,7 +5,7 @@ import { RepositoryBase, IRepositoryBase } from '../repositories/RepositoryBase'
 import { IUserModel } from '../models/UserModel';
 import { ICourseModel } from '../models/CourseModel';
 import { CourseRepository } from '../repositories/CourseRepository';
-import { RepositoryMock } from '../repositories/RepositoryMock';
+import { RepositoryMock, RepositoryCoursesMock, RepositoryUsersMock } from '../repositories/RepositoryMock';
 import { IUserModelMock, ICourseModelMock } from '../models/Mocks';
 
 // Create the container and set the injectionMode to PROXY (which is also the default).
@@ -20,13 +20,13 @@ export class ContainerProvider {
         });
         // Register the UserRepository
         this.container.register({
-            testService: asClass(RepositoryMock),
+            testRepoUsers: asClass(RepositoryUsersMock),
             userRepo: asClass(UserRepository).classic()
         });
 
         // Register the CourseRepository
         this.container.register({
-            testService: asClass(RepositoryMock),
+            testRepoCourse: asClass(RepositoryCoursesMock),
             courseRepo: asClass(CourseRepository).classic()
         });
 
@@ -51,12 +51,12 @@ export class ContainerProvider {
  * Provires a repository using the IUserModel interface
  */
 export function GetUserRepo(): IRepositoryBase<IUserModelMock> {
-    return ContainerProvider.provide<IRepositoryBase<IUserModelMock>>('testService');
+    return ContainerProvider.provide<IRepositoryBase<IUserModelMock>>('testRepoUsers');
 }
 
 /**
  * Provires a repository using the ICourseModel interface
  */
 export function GetCourseRepo(): IRepositoryBase<ICourseModelMock> {
-    return ContainerProvider.provide<IRepositoryBase<ICourseModelMock>>('testService');
+    return ContainerProvider.provide<IRepositoryBase<ICourseModelMock>>('testRepoCourse');
 }

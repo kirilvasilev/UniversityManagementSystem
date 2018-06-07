@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import {Request, Response, NextFunction} from 'express';
 import express from 'express';
 import bodyParser from 'body-parser';
 import logger from 'morgan';
@@ -7,6 +8,8 @@ import compression from 'compression';
 import cors from 'cors';
 import path from 'path';
 import * as HttpStatus from 'http-status-codes';
+import jwt from 'jsonwebtoken';
+
 
 import UserRouter from './routes/UserRouter';
 import CourseRouter from './routes/CourseRouter';
@@ -15,6 +18,7 @@ import {
     LogLevel,
     log
 } from './logger/ILogger';
+
 //import IndexRouter from './routes/IndexRouter';
 
 class Server {
@@ -57,15 +61,33 @@ class Server {
         // Point static path to dist
         this.app.use(express.static(path.join(__dirname, 'app')));
     }
+    
+    private UseAuthentication(req: Request, res: Response, next: NextFunction) {
+        if((req as any).user) {
+            next();
+        }
+        else {
+            res.status(HttpStatus.UNAUTHORIZED).json({message:'Unauthorized user!'});
+        }
+    }
 
     public routes(): void {
-
-        this.app.use('/api/v1/users', UserRouter);
-        this.app.use('/api/v1/courses', CourseRouter);
-        this.app.use(['/register', '/login'], AuthRouter)
-        this.app.get('**', (req, res) => {
-            res.sendStatus(HttpStatus.NOT_FOUND);
+        this.app.use(async (req, res, next) => {
+            (req as any).user = undefined;
+            if(req.headers && req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT') {
+                try {
+                    let decode = await jwt.verify(req.headers.authorization.split(' ')[1], 'SUPERSECRETCODE');
+                    (req as any).user = decode;
+                    log(`Authenticated user: ${(decode as any).username}`);
+                }
+                catch {  
+                }
+            }  
+            next();
         });
+        this.app.use('/api/v1/users', [this.UseAuthentication, UserRouter]);
+        this.app.use('/api/v1/courses', [this.UseAuthentication, CourseRouter]);
+        this.app.use('/', AuthRouter);
     }
 }
 export default new Server().app;

@@ -1,5 +1,6 @@
 import { Router, Request, Response } from 'express';
 import * as HttpStatus from 'http-status-codes';
+import jwt from 'jsonwebtoken';
 
 import { GetUserRepo } from '../container/ContainerProvider';
 import { handleError } from '../handlers/ErrorHandler';
@@ -21,15 +22,16 @@ class AuthRouter {
     public async Register(req: Request, res: Response) {
         let repo = GetUserRepo();
         try {
-            
-            if(req.body.username) {
-                if(await repo.find({username: req.body.username})) {
-                    res.status(HttpStatus.CONFLICT).send("User already exists!");
-                }
-            }
+            let foundUsers = await repo.find({username: req.body.username});
 
-            let user = await repo.create(req.body);
-            res.status(HttpStatus.CREATED).send(user);
+            if(foundUsers.length > 0) {
+                res.status(HttpStatus.CONFLICT).json({message: "User already exists."});
+            }
+            else {
+                let user = await repo.create(req.body);
+                delete user.password;
+                res.status(HttpStatus.CREATED).json({token: jwt.sign(user, 'SUPERSECRETCODE')});
+            }          
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'CreateUser');
         }
@@ -41,16 +43,14 @@ class AuthRouter {
 
             let user = await repo.findOne({username: req.body.username});
 
-            if(!user) {
-                res.status(HttpStatus.NOT_FOUND).send("User not found!");
+            if(user && user.password === req.body.password){
+                delete user.password;
+                res.status(HttpStatus.ACCEPTED).json({token: jwt.sign(user, 'SUPERSECRETCODE')});
+                return;
             }
+            res.status(HttpStatus.UNAUTHORIZED).json({message: 'Wrong username or password.'}); 
 
-            if(user.password === req.body.password){
-                res.status(HttpStatus.ACCEPTED).send(user);
-            }
-            res.sendStatus(HttpStatus.UNAUTHORIZED); 
-
-        } catch (error) {
+        } catch (error) {    
             handleError(res, error, CONTROLLER_NAME, 'CreateUser');
         }
     }
@@ -58,6 +58,7 @@ class AuthRouter {
     public routes() {
         this.router.post('/register', this.Register);
         this.router.post('/login', this.Login);
+        this.router.use('**', (req, res) => res.status(HttpStatus.NOT_FOUND).json({message: 'Route not found'}));
     }
 }
 // export
