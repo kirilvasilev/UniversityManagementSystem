@@ -13,8 +13,11 @@ export class CourseOverview extends React.Component {
     render() {
         return (
             <div className="content-grid mdl-grid app__course-overview">
-                {/* {this.props.courses.courses.map(course => <CourseContainer key={course.id} course={course}/>)} */}
-                <Course/>
+                <div className="mdl-cell course-overview__course add">
+                    <h3 className="course-overview__enroll-title">Enroll in a new course</h3>
+                    <button className="mdl-button mdl-js-button mdl-button--fab course-overview__enroll"><i className="material-icons">add</i></button>
+                </div>
+                {this.props.courses.courses.map(course => <Course key={course.id} course={course}/>)}
             </div>
         );
     }

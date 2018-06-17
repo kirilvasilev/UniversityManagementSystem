@@ -1,8 +1,5 @@
 .app__footer {
-    display: flex;
     justify-content: center;
     padding-bottom: 20px;
-    position:absolute;
-    bottom:0;
-    height:30px;
+    bottom: 0;
 }

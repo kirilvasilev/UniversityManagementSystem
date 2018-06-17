@@ -8,10 +8,17 @@
     width: 410px;
     cursor: pointer;
     transition: all .2s ease-in-out;
+    padding: 10px;
 }
 
 .course-overview__course:hover { transform: scale(0.95); }
 
 .course-overview__course > * {
     margin: auto;
+}
+
+.course-overview__edit-delete {
+    display: flex;
+    flex-direction: row;
+    margin: unset;
 }

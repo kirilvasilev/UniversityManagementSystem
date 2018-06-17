@@ -6,9 +6,17 @@ import './Header.css';
 export class Header extends React.Component {
 
     render() {
+        let header = "My Courses";
+
+        if (window.location.pathname === "/login") {
+            header = "Login"
+        } else if (window.location.pathname === "/signup") {
+            header = "Sign up"
+        }
+
         return (
             <header className="app__header">
-                <div className="header__events">Course Dashboard</div>
+                <div className="header">{header}</div>
             </header>
         );
     }

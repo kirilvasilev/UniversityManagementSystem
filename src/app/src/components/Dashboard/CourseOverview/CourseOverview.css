@@ -2,3 +2,11 @@
     display: flex;
     justify-content: space-around;
 }
+
+.course-overview__enroll {
+    margin: 0 auto;
+}
+
+.course-overview__enroll-title {
+    margin: 50px auto;
+}
