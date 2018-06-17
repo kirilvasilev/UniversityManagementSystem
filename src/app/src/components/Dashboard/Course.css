@@ -1,0 +1,17 @@
+.course-overview__course {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 1px solid rgb(245,245,245);
+    box-shadow: 1px 2px 4px rgba(0, 0, 0, .1);
+    border-radius: 4px;
+    width: 410px;
+    cursor: pointer;
+    transition: all .2s ease-in-out;
+}
+
+.course-overview__course:hover { transform: scale(0.95); }
+
+.course-overview__course > * {
+    margin: auto;
+}

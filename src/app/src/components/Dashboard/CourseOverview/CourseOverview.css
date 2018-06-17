@@ -1,0 +1,4 @@
+.app__course-overview {
+    display: flex;
+    justify-content: space-around;
+}

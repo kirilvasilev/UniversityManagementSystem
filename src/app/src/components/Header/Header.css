@@ -1,0 +1,9 @@
+.header__events {
+    font-weight: bold;
+    font-size: 22px;
+}
+
+.app__header {
+    padding: 25px 0;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
