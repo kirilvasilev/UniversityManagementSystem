@@ -11,25 +11,25 @@ export class RepositoryMock<T extends BaseMock> implements IRepositoryBase<T>{
      *
      */
     constructor(private _collection: Array<T>) {
-        
+
     }
 
     retrieve(): Promise<T[]> {
         return new Promise<T[]>((resolve, reject) => resolve(this._collection));
     }
     findById(id: string): Promise<T> {
-        return new Promise<T>((resolve, reject) => resolve(this._collection.find(e => e.id.toString() == id && e.deleted == false)));
+        return new Promise<T>((resolve, reject) => resolve(this._collection.find(e => e._id == id && e.deleted == false)));
     }
     findOne(cond?: any): Promise<T> {
         var foundItems: Array<T> = [];
-        if(cond != {}) {      
-            this._collection.forEach( (element) => { 
+        if (cond != {}) {
+            this._collection.forEach((element) => {
                 let result = false;
                 for (var key in cond) {
                     result = element[key] === cond[key];
-                    if(!result) break;
+                    if (!result) break;
                 }
-                if(result) {
+                if (result) {
                     foundItems.push(element);
                 }
             });
@@ -40,38 +40,40 @@ export class RepositoryMock<T extends BaseMock> implements IRepositoryBase<T>{
     }
     find(cond: any, fields: Object, options: Object): Promise<T[]> {
         var foundItems: Array<T> = [];
-        if(cond != {}) {      
-            this._collection.forEach( (element) => { 
+        if (cond != {}) {
+            if (cond.lecturer instanceof Object)
+                cond.lecturer = cond.lecturer.$in;
+            this._collection.forEach((element) => {
                 let result = false;
                 for (var key in cond) {
                     result = element[key] === cond[key];
-                    if(!result) break;
+                    if (!result) break;
                 }
-                if(result) {
+                if (result) {
                     foundItems.push(element);
                 }
             });
         }
-        return new Promise((resolve, reject) => resolve(foundItems));       
+        return new Promise((resolve, reject) => resolve(foundItems));
     }
     create(item: T): Promise<T> {
         return new Promise((resolve, reject) => {
-            item.id = Math.floor(Math.random() * Math.floor(12451513212));
+            item._id = Math.floor(Math.random() * Math.floor(12451513212)).toString();
             item.createdAt = new Date();
             this._collection.push(item);
             return resolve(item);
         });
     }
-    update(_id: string, item: T): Promise<T> {
+    update(id: string, item: T): Promise<T> {
         return new Promise((resolve, reject) => {
-            let foundItemIndex = this._collection.findIndex(e => e.id.toString() == _id);
+            let foundItemIndex = this._collection.findIndex(e => e._id.toString() == id);
             this._collection[foundItemIndex] = item;
             return resolve(this._collection[foundItemIndex]);
         });
     }
-    delete(_id: string): Promise<T> {
+    delete(id: string): Promise<T> {
         return new Promise((resolve, reject) => {
-            let foundItemIndex = this._collection.findIndex(e => e.id.toString() == _id);
+            let foundItemIndex = this._collection.findIndex(e => e._id.toString() == id);
             let item = this._collection[foundItemIndex];
             item.deleted = true;
             item.deletedAt = new Date();
@@ -79,8 +81,8 @@ export class RepositoryMock<T extends BaseMock> implements IRepositoryBase<T>{
         });
     }
 
-    public toObjectId(_id: string): Number {
-        return +_id;
+    public toObjectId(id: string): Number {
+        return +id;
     }
 }
 
@@ -90,7 +92,7 @@ export class RepositoryUsersMock extends RepositoryMock<IUserModelMock> {
      */
     constructor() {
         super(USERS);
-        
+
     }
 }
 
@@ -100,13 +102,13 @@ export class RepositoryCoursesMock extends RepositoryMock<ICourseModelMock> {
      */
     constructor() {
         super(COURSES);
-        
+
     }
 }
 
-let USERS : IUserModelMock[] = [
+let USERS: IUserModelMock[] = [
     {
-        id: 99999,
+        _id: "99999",
         name: {
             first: "admin",
             last: "admin"
@@ -120,7 +122,7 @@ let USERS : IUserModelMock[] = [
         deletedAt: null
     },
     {
-        id: 1,
+        _id: "1",
         name: {
             first: "Georgi",
             last: "Georgiev"
@@ -134,7 +136,7 @@ let USERS : IUserModelMock[] = [
         deletedAt: null
     },
     {
-        id: 2,
+        _id: "2",
         name: {
             first: "Ivailo",
             last: "Ivailov"
@@ -148,7 +150,7 @@ let USERS : IUserModelMock[] = [
         deletedAt: null
     },
     {
-        id: 3,
+        _id: "3",
         name: {
             first: "Ivan",
             last: "Ivanov"
@@ -158,18 +160,18 @@ let USERS : IUserModelMock[] = [
         userType: UserType.Student,
         courses: [{
             creditScore: 4,
-            course: 1
-            },
-            {
+            course: "1"
+        },
+        {
             creditScore: 3,
-            course: 2
+            course: "2"
         }],
         createdAt: new Date(),
         deleted: false,
         deletedAt: null
     },
     {
-        id: 4,
+        _id: "4",
         name: {
             first: "Mario",
             last: "Mariov"
@@ -179,18 +181,18 @@ let USERS : IUserModelMock[] = [
         userType: UserType.Student,
         courses: [{
             creditScore: 4,
-            course: 1
+            course: "1"
         },
         {
             creditScore: 2,
-            course: 3
+            course: "3"
         }],
         createdAt: new Date(),
         deleted: false,
         deletedAt: null
     },
     {
-        id: 5,
+        _id: "5",
         name: {
             first: "Ilia",
             last: "Iliev"
@@ -200,11 +202,11 @@ let USERS : IUserModelMock[] = [
         userType: UserType.Student,
         courses: [{
             creditScore: 5,
-            course: 2
+            course: "2"
         },
         {
             creditScore: 4,
-            course: 3
+            course: "3"
         }],
         createdAt: new Date(),
         deleted: false,
@@ -212,9 +214,9 @@ let USERS : IUserModelMock[] = [
     }
 ];
 
-let COURSES : Array<ICourseModelMock> = [
+let COURSES: Array<ICourseModelMock> = [
     {
-        id: 1,
+        _id: "1",
         name: "Informatika",
         description: "",
         schedules: [{
@@ -228,13 +230,13 @@ let COURSES : Array<ICourseModelMock> = [
             room: "302"
         }],
         credits: 5,
-        lecturer: 1,
+        lecturer: "1",
         createdAt: new Date(),
         deleted: false,
         deletedAt: null
     },
     {
-        id: 2,
+        _id: "2",
         name: "Statistika",
         description: "",
         schedules: [{
@@ -253,13 +255,13 @@ let COURSES : Array<ICourseModelMock> = [
             room: "101"
         }],
         credits: 5,
-        lecturer: 2,
+        lecturer: "2",
         createdAt: new Date(),
         deleted: false,
         deletedAt: null
     },
     {
-        id: 3,
+        _id: "3",
         name: "Matematika",
         description: "",
         schedules: [{
@@ -273,7 +275,7 @@ let COURSES : Array<ICourseModelMock> = [
             room: "201"
         }],
         credits: 5,
-        lecturer: 2,
+        lecturer: "2",
         createdAt: new Date(),
         deleted: false,
         deletedAt: null

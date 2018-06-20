@@ -1,6 +1,6 @@
 import { UserType } from "./UserModel";
 
-export interface IUserModelMock extends BaseMock { 
+export interface IUserModelMock extends BaseMock {
     name: {
         first: String;
         last: String;
@@ -19,13 +19,13 @@ export interface ICourseModelMock extends BaseMock {
     description: String;
     schedules: Array<Schedule>;
     credits: Number
-    lecturer: Number;
-   
+    lecturer: String;
+
 };
 
 export interface Course {
     creditScore: Number;
-    course: Number;
+    course: String;
 }
 
 export interface Schedule {
@@ -35,10 +35,9 @@ export interface Schedule {
 }
 
 export interface BaseMock {
-    [key:string]: any;
-    id: Number;
+    [key: string]: any;
+    _id: String;
     createdAt: Date;
     deleted: Boolean;
     deletedAt: Date;
-    
 }

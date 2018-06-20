@@ -8,5 +8,5 @@ import { ContainerProvider } from '../container/ContainerProvider';
 
 export function handleError(res: Response, err: String | Error, controller: String, method: String) {
     log(err, controller, method, LogLevel.Error);
-    res.sendStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+    res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: "Oops! Something went wrong." });
 }

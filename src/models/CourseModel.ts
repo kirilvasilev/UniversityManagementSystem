@@ -6,8 +6,9 @@ export interface ICourseModel extends IUMSModel {
     name: String;
     description: String;
     schedules: [{
-        courseDate: Date;
-        courseRoom: String;
+        dayOfWeek: Number;
+        time: String;
+        room: String;
     }];
     credits: Number
     lecturer: Types.ObjectId;

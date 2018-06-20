@@ -16,11 +16,15 @@ class CourseSchemaClass extends Schema {
                 },
                 description: String,
                 schedules: [{
-                    courseDate: {
-                        type: Date,
+                    dayOfWeek: {
+                        type: Number,
                         required: true
                     },
-                    courseRoom: {
+                    time: {
+                        type: String,
+                        required: true
+                    },
+                    room: {
                         type: String,
                         required: true
                     }

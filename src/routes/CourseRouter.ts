@@ -26,7 +26,7 @@ class CourseRouter {
             if (courses) {
                 res.status(HttpStatus.OK).json(courses);
             } else {
-                res.status(HttpStatus.NOT_FOUND).json({message: 'Course not found.'});
+                res.status(HttpStatus.NOT_FOUND).json({ message: 'Course not found.' });
             }
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'GetCourse');
@@ -41,7 +41,7 @@ class CourseRouter {
             if (course && !course.deleted) {
                 res.status(HttpStatus.OK).json(course);
             } else {
-                res.status(HttpStatus.NOT_FOUND).json({message: 'Course not found.'});
+                res.status(HttpStatus.NOT_FOUND).json({ message: 'Course not found.' });
             }
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'GetCourse');
@@ -66,7 +66,7 @@ class CourseRouter {
             course.deleted = true;
             course.deletedAt = new Date();
             course = await course.save();
-            res.status(HttpStatus.ACCEPTED).json({message: 'Course deleted.'});
+            res.status(HttpStatus.ACCEPTED).json({ message: 'Course deleted.' });
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'DeleteCourse');
         }
@@ -88,7 +88,7 @@ class CourseRouter {
                 res.status(HttpStatus.ACCEPTED).json(course);
             }
             else {
-                res.status(HttpStatus.NOT_FOUND).json({message: 'Course not found.'});
+                res.status(HttpStatus.NOT_FOUND).json({ message: 'Course not found.' });
             }
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'UpdateCourse');
@@ -111,7 +111,7 @@ class CourseRouter {
                 res.status(HttpStatus.CREATED).json(course);
             }
             else {
-                res.status(HttpStatus.CONFLICT).json({message: 'Schedule already exists.'});
+                res.status(HttpStatus.CONFLICT).json({ message: 'Schedule already exists.' });
             }
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'AddSchedule');

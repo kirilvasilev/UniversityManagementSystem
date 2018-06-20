@@ -21,28 +21,31 @@ class UserRouter {
     /** Returns the user's data and the courses he is attending  */
     public async GetUser(req: Request, res: Response) {
         let repo = GetUserRepo();
+        let userId = req.params.id || (req as any).user._id;
         try {
-            let user = await repo.findById(req.params.id);
+            let user = await repo.findById(userId.toString());
             if (user && !user.deleted) {
+                delete user.password;
                 res.status(HttpStatus.OK).json(user);
             } else {
-                res.status(HttpStatus.NOT_FOUND).json({message: 'User not found.'});
+                res.status(HttpStatus.NOT_FOUND).json({ message: 'User not found.' });
             }
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'GetUser');
         }
     }
 
-    
+
 
     public async DeleteUser(req: Request, res: Response) {
         let repo = GetUserRepo();
+        let userId = req.params.id || (req as any).user._id;
         try {
-            let user = await repo.findById(req.params.id);
+            let user = await repo.findById(userId.toString());
             user.deleted = true;
             user.deletedAt = new Date();
             user = await user.save();
-            res.status(HttpStatus.ACCEPTED).json({message: 'User deleted.', userId: user.id});
+            res.status(HttpStatus.ACCEPTED).json({ message: 'User deleted.', userId: user.id });
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'DeleteUser');
         }
@@ -50,8 +53,9 @@ class UserRouter {
 
     public async UpdateUser(req: Request, res: Response) {
         let repo = GetUserRepo();
+        let userId = req.params.id || (req as any).user._id;
         try {
-            let user = await repo.findById(req.params.id);
+            let user = await repo.findById(userId.toString());
             if (user && !user.deleted) {
 
                 //Deleting object is only performet with the DETETE verb
@@ -68,11 +72,11 @@ class UserRouter {
                 }
                 //TODO: Check if authorized to update userType!
 
-                user = await repo.update(req.params.id, req.body);
+                user = await repo.update(userId.toString(), req.body);
                 res.status(HttpStatus.ACCEPTED).json(user);
             }
             else {
-                res.status(HttpStatus.NOT_FOUND).json({message: 'User not found.'});
+                res.status(HttpStatus.NOT_FOUND).json({ message: 'User not found.' });
             }
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'UpdateUser');
@@ -92,9 +96,9 @@ class UserRouter {
 
     public async GetUserCourses(req: Request, res: Response) {
         let repo = GetUserRepo();
-
+        let userId = req.params.id || (req as any).user._id;
         try {
-            let user = await repo.findById(req.params.id);
+            let user = await repo.findById(userId.toString());
             if (user && !user.deleted) {
 
                 let courseRepo = GetCourseRepo();
@@ -104,8 +108,8 @@ class UserRouter {
                     let hangingCourses = await courseRepo.find({ lecturer: null });
 
                     res.status(HttpStatus.OK).json({
-                        lecturerCourses: lecturerCourses,
-                        hangingCourses: hangingCourses
+                        myCourses: lecturerCourses,
+                        otherCourses: hangingCourses
                     });
                 }
                 else {
@@ -113,13 +117,13 @@ class UserRouter {
                     let otherCourses = await courseRepo.find({ _id: { $nin: user.courses.map(course => course.course) } });
 
                     res.status(HttpStatus.OK).json({
-                        stundetCourses: studentCourses,
+                        myCourses: studentCourses,
                         otherCourses: otherCourses
                     });
                 }
             }
             else {
-                res.status(HttpStatus.NOT_FOUND).json({message: 'User not found.'});
+                res.status(HttpStatus.NOT_FOUND).json({ message: 'User not found.' });
             }
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'GetUserCourses');
@@ -128,8 +132,9 @@ class UserRouter {
 
     public async AddCourse(req: Request, res: Response) {
         let repo = GetUserRepo();
+        let userId = req.params.id || (req as any).user._id;
         try {
-            let user = await repo.findById(req.params.id);
+            let user = await repo.findById(userId.toString());
             user.courses.push({ creditScore: 0, course: repo.toObjectId(req.body.id) })
             user = await user.save();
             res.status(HttpStatus.CREATED).json(user);
@@ -140,27 +145,38 @@ class UserRouter {
 
     public async RemoveCourse(req: Request, res: Response) {
         let repo = GetUserRepo();
+        let userId = req.params.id || (req as any).user._id;
         try {
             let courseId = repo.toObjectId(req.body.id);
-            let user = await repo.findById(req.params.id);
+            let user = await repo.findById(userId.toString());
             let course = user.courses.find((credit) => credit.course == courseId);
             user.courses.splice(user.courses.indexOf(course), 1);
             user = await user.save();
-            res.status(HttpStatus.ACCEPTED).json({message: 'Course removed.'});
+            res.status(HttpStatus.ACCEPTED).json({ message: 'Course removed.' });
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'RemoveCourse');
         }
     }
 
     public routes() {
+
+        this.router.get('/', this.GetUsers);
+
+        this.router.get('/', this.GetUser);
+        this.router.delete('/', this.DeleteUser);
+        this.router.put('/', this.UpdateUser);
+
+        this.router.get('/courses', this.GetUserCourses);
+        this.router.post('/courses', this.AddCourse);
+        this.router.delete('/courses', this.RemoveCourse);
+
         this.router.get('/:id', this.GetUser);
         this.router.delete('/:id', this.DeleteUser);
         this.router.put('/:id', this.UpdateUser);
-        this.router.get('/', this.GetUsers);
 
         this.router.get('/:id/courses', this.GetUserCourses);
-        this.router.post('/:id/courses/', this.AddCourse);
-        this.router.delete('/:id/courses/', this.RemoveCourse);
+        this.router.post('/:id/courses', this.AddCourse);
+        this.router.delete('/:id/courses', this.RemoveCourse);
     }
 }
 
