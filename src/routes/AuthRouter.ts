@@ -31,11 +31,15 @@ class AuthRouter {
             else {
                 req.body.userType = users.length > 0 ? UserType.Student : UserType.Lecturer;
                 let user = await repo.create(req.body);
-                delete user.password;              
-                res.status(HttpStatus.CREATED).json({token: jwt.sign(user, 'SUPERSECRETCODE')});
+                let flatUser = {
+                    _id: user._id,
+                    username: user.username,
+                    userType: user.userType.toString()
+                }
+                res.status(HttpStatus.CREATED).json({token: jwt.sign(flatUser, 'SUPERSECRETCODE')});
             }          
         } catch (error) {
-            handleError(res, error, CONTROLLER_NAME, 'CreateUser');
+            handleError(res, error, CONTROLLER_NAME, 'Register');
         }
     }
 
@@ -46,14 +50,18 @@ class AuthRouter {
             let user = await repo.findOne({ username: req.body.username });
 
             if (user && user.password === req.body.password) {
-                delete user.password;
-                res.status(HttpStatus.ACCEPTED).json({ token: jwt.sign(user, 'SUPERSECRETCODE') });
+                let flatUser = {
+                    _id: user._id,
+                    username: user.username,
+                    userType: user.userType.toString()
+                }
+                res.status(HttpStatus.ACCEPTED).json({ token: jwt.sign(flatUser, 'SUPERSECRETCODE') });
                 return;
             }
             res.status(HttpStatus.UNAUTHORIZED).json({ message: 'Wrong username or password.' });
 
         } catch (error) {
-            handleError(res, error, CONTROLLER_NAME, 'CreateUser');
+            handleError(res, error, CONTROLLER_NAME, 'Login');
         }
     }
 

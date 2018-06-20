@@ -41,7 +41,7 @@ export class RepositoryMock<T extends BaseMock> implements IRepositoryBase<T>{
     find(cond: any, fields: Object, options: Object): Promise<T[]> {
         var foundItems: Array<T> = [];
         if (cond != {}) {
-            if (cond.lecturer instanceof Object)
+            if (cond !== undefined && cond.lecturer !== undefined && cond.lecturer instanceof Object)
                 cond.lecturer = cond.lecturer.$in;
             this._collection.forEach((element) => {
                 let result = false;
