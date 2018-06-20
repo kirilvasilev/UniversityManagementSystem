@@ -30,10 +30,8 @@ export const login = userCredentials => async dispatch => {
 export const signup = userCredentials => async dispatch => {
     const localhost = "http://localhost:3000";
     try {
-        const rsp = await axios.post(`${localhost}/`, userCredentials);
-        dispatch({
-            type: SIGN_UP,
-        });
+        const rsp = await axios.post(`${localhost}/register`, userCredentials);
+        console.log(rsp);
     } catch(error) {
         // handle error here
     }

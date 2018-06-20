@@ -8,7 +8,7 @@ import Header from './components/Header/Header';
 import CourseOverviewContainer from './containers/CourseOverviewContainer';
 import Footer from './components/Footer/Footer';
 import LoginContainer from './containers/LoginContainer';
-import Signup from './components/Signup/Signup';
+import SignupContainer from './containers/SignupContainer';
 
 
 class App extends Component {
@@ -25,7 +25,7 @@ class App extends Component {
             <Header/>
             <Switch>
               <Route path="/login" component={LoginContainer}/>
-              <Route path="/signup" component={Signup}/>
+              <Route path="/signup" component={SignupContainer}/>
               <Route path="/" component={CourseOverviewContainer} onEnter={this.requireAuth()}/>
             </Switch>
             <Footer/>

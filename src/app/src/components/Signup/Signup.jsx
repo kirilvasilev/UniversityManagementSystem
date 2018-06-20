@@ -7,9 +7,11 @@ export class Signup extends React.Component {
         super(props);
     
         this.state = {
-          username: "",
-          password: "",
-          password2: ""
+            firstname: "",
+            lastname: "",
+            username: "",
+            password: "",
+            password2: ""
         };
     }
     
@@ -30,9 +32,18 @@ export class Signup extends React.Component {
         event.preventDefault();
         console.log(this.isValidSignup());
         if(this.isValidSignup()) {
-            console.log(this.state.username);
-            console.log(this.state.password);
-            console.log(this.state.password2);
+            console.log({
+                firstname: this.state.firstname,
+                lastname: this.state.lastname,
+                username: this.state.username,
+                password: this.state.password
+            });
+            this.props.signup({
+                firstname: this.state.firstname,
+                lastname: this.state.lastname,
+                username: this.state.username,
+                password: this.state.password 
+            });
         } else {
             console.log("Invalid signup");
         }
@@ -41,6 +52,24 @@ export class Signup extends React.Component {
     render() {
         return (
             <form className="app__sign-up-form">
+                <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input className="mdl-textfield__input firstname" 
+                    type="text" 
+                    id="firstname" 
+                    name="firstname"
+                    value={this.state.firstname}
+                    onChange={this.handleChange}
+                    placeholder="Firstname"/>
+                </div>
+                <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input className="mdl-textfield__input lastname" 
+                    type="text" 
+                    id="lastname" 
+                    name="lastname"
+                    value={this.state.lastname}
+                    onChange={this.handleChange}
+                    placeholder="Lastname"/>
+                </div>
                 <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input className="mdl-textfield__input username" 
                     type="text" 
