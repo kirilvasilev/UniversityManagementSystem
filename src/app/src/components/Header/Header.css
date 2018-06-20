@@ -6,4 +6,9 @@
 .app__header {
     padding: 25px 0;
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+    height: 60px;
+}
+
+.header__link {
+    display: none;
 }

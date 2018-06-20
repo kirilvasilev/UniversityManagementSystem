@@ -25,10 +25,11 @@ export class Login extends React.Component {
 
     handleLogin = event => {
         event.preventDefault();
-        console.log(this.isValidLogin());
         if(this.isValidLogin()) {
-            console.log(this.state.username);
-            console.log(this.state.password);
+            this.props.login({
+                "username": this.state.username,
+                "password": this.state.password
+            });
         } else {
             console.log("Invalid login");
         }

@@ -4,7 +4,8 @@ import { fetchCourses } from '../state/courses';
 import { CourseOverview } from '../components/Dashboard/CourseOverview/CourseOverview';
 
 const mapStateToProps = (state) => ({
-   courses: state.courses
+   courses: state.courses,
+   auth: state.auth
 })
 
 const mapDispatchToProps = 

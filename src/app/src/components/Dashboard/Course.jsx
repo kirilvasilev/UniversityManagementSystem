@@ -21,7 +21,7 @@ export class Course extends React.Component {
                     <i className="material-icons">edit</i>
                     </button>
                     <button className="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect" onClick={() => {
-                        console.log("delete")
+                        console.log("delete", this.props.course.id)
                     }}>
                     <i className="material-icons">delete</i>
                     </button>

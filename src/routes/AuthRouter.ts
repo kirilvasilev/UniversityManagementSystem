@@ -31,10 +31,9 @@ class AuthRouter {
             else {
                 req.body.userType = users.length > 0 ? UserType.Student : UserType.Lecturer;
                 let user = await repo.create(req.body);
-                delete user.password;
-
-                res.status(HttpStatus.CREATED).json({ token: jwt.sign(user, 'SUPERSECRETCODE') });
-            }
+                delete user.password;              
+                res.status(HttpStatus.CREATED).json({token: jwt.sign(user, 'SUPERSECRETCODE')});
+            }          
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'CreateUser');
         }

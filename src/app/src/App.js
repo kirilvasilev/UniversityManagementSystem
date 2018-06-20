@@ -7,11 +7,16 @@ import {BrowserRouter, Route, Switch} from "react-router-dom";
 import Header from './components/Header/Header';
 import CourseOverviewContainer from './containers/CourseOverviewContainer';
 import Footer from './components/Footer/Footer';
-import Login from './components/Login/Login';
+import LoginContainer from './containers/LoginContainer';
 import Signup from './components/Signup/Signup';
 
 
 class App extends Component {
+  
+  requireAuth() {
+    // console.log(this.props.auth)
+  }
+
   render() {
     return (
       <Provider store={store}>
@@ -19,9 +24,9 @@ class App extends Component {
           <div className="app-container">
             <Header/>
             <Switch>
-              <Route path="/login" component={Login}/>
+              <Route path="/login" component={LoginContainer}/>
               <Route path="/signup" component={Signup}/>
-              <Route path="/" component={CourseOverviewContainer}/>
+              <Route path="/" component={CourseOverviewContainer} onEnter={this.requireAuth()}/>
             </Switch>
             <Footer/>
           </div>

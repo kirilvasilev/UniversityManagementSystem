@@ -4,150 +4,65 @@ import axios from 'axios';
 
 // Constants
 export const FETCH_COURSES = 'FETCH_COURSES';
+export const CREATE_COURSE = 'CREATE_COURSE';
+export const DELETE_COURSE = 'DELETE_COURSE';
+export const UPDATE_COURSE = 'UPDATE_COURSE';
 
 // State
 const initialState = {
-    courses: [
-        {
-            id: 1,
-            name: "Informatika",
-            description: "Learn about computer software, networks, programming languages, data structures and more.",
-            schedules: [{
-                dayOfWeek: 1,
-                time: "11:30:00",
-                room: "301"
-            },
-            {
-                dayOfWeek: 1,
-                time: "12:30:00",
-                room: "302"
-            }],
-            credits: 5,
-            lecturer: 1,
-            createdAt: new Date(),
-            deleted: false,
-            deletedAt: null
-        },
-        {
-            id: 2,
-            name: "Statistika",
-            description: "Learn about statistical modals, how to create graphs, use data, analyse information and create charts.",
-            schedules: [{
-                dayOfWeek: 1,
-                time: "11:30:00",
-                room: "101"
-            },
-            {
-                dayOfWeek: 2,
-                time: "11:30:00",
-                room: "101"
-            },
-            {
-                dayOfWeek: 4,
-                time: "11:30:00",
-                room: "101"
-            }],
-            credits: 5,
-            lecturer: 2,
-            createdAt: new Date(),
-            deleted: false,
-            deletedAt: null
-        },
-        {
-            id: 3,
-            name: "Matematika",
-            description: "Learn all about mathematics. Analytics geometry, deferential and intergral calculas. Even more complecated mathematical structures and models.",
-            schedules: [{
-                dayOfWeek: 1,
-                time: "15:30:00",
-                room: "301"
-            },
-            {
-                dayOfWeek: 1,
-                time: "16:30:00",
-                room: "201"
-            }],
-            credits: 5,
-            lecturer: 2,
-            createdAt: new Date(),
-            deleted: false,
-            deletedAt: null
-        },
-        {
-            id: 4,
-            name: "Informatika",
-            description: "Learn about computer software, networks, programming languages, data structures and more.",
-            schedules: [{
-                dayOfWeek: 1,
-                time: "11:30:00",
-                room: "301"
-            },
-            {
-                dayOfWeek: 1,
-                time: "12:30:00",
-                room: "302"
-            }],
-            credits: 5,
-            lecturer: 1,
-            createdAt: new Date(),
-            deleted: false,
-            deletedAt: null
-        },
-        {
-            id: 5,
-            name: "Statistika",
-            description: "Learn about statistical modals, how to create graphs, use data, analyse information and create charts.",
-            schedules: [{
-                dayOfWeek: 1,
-                time: "11:30:00",
-                room: "101"
-            },
-            {
-                dayOfWeek: 2,
-                time: "11:30:00",
-                room: "101"
-            },
-            {
-                dayOfWeek: 4,
-                time: "11:30:00",
-                room: "101"
-            }],
-            credits: 5,
-            lecturer: 2,
-            createdAt: new Date(),
-            deleted: false,
-            deletedAt: null
-        },
-        {
-            id: 6,
-            name: "Matematika",
-            description: "Learn all about mathematics. Analytics geometry, deferential and intergral calculas. Even more complecated mathematical structures and models.",
-            schedules: [{
-                dayOfWeek: 1,
-                time: "15:30:00",
-                room: "301"
-            },
-            {
-                dayOfWeek: 1,
-                time: "16:30:00",
-                room: "201"
-            }],
-            credits: 5,
-            lecturer: 2,
-            createdAt: new Date(),
-            deleted: false,
-            deletedAt: null
-        }
-    ]
+    courses: []
 }
 
 //Actions
 export const fetchCourses = pageNumber => async dispatch => {
     const localhost = "http://localhost:3000";
     try {
-        const rsp = await axios.get(`${localhost}/`);
+        axios.defaults.headers.common['Authorization'] = 
+                                'JWT ' + localStorage.getItem('jwt');
+        const rsp = await axios.get(`${localhost}/api/v1/courses`);
         dispatch({
             type: FETCH_COURSES,
+            payload: rsp.data
+        });
+    } catch(error) {
+        // handle error here
+    }
+}
+
+export const createCourse = course => async dispatch => {
+    const localhost = "http://localhost:3000";
+    try {
+        const rsp = await axios.post(`${localhost}/api/v1/courses`, course);
+        dispatch({
+            type: CREATE_COURSE,
+            payload: rsp.data
+        });
+    } catch(error) {
+        // handle error here
+    }
+}
+
+export const updateCourse = course => async dispatch => {
+    const localhost = "http://localhost:3000";
+    const userId = 1;  //get id from user
+    try {
+        const rsp = await axios.put(`${localhost}/api/v1/${userId}`, course);
+        dispatch({
+            type: UPDATE_COURSE,
+            payload: rsp.data
+        });
+    } catch(error) {
+        // handle error here
+    }
+}
+
+export const deleteCourse = courseId => async dispatch => {
+    const localhost = "http://localhost:3000";
+    const userId = 1;  //get id from user
+    try {
+        const rsp = await axios.delete(`${localhost}/api/v1/${userId}`, {"id": courseId});
+        dispatch({
+            type: DELETE_COURSE,
             payload: rsp.data
         });
     } catch(error) {
@@ -159,9 +74,9 @@ export const fetchCourses = pageNumber => async dispatch => {
 export default function(state = initialState, action={type, payload}) {
     switch(action.type) {
         case FETCH_COURSES:
-            return {
-                ...state 
-            };
+            return [
+                ...action.payload
+            ];
         
         default:
             return state;

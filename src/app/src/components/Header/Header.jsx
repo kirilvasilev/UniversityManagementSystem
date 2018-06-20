@@ -17,6 +17,11 @@ export class Header extends React.Component {
         return (
             <header className="app__header">
                 <div className="header">{header}</div>
+                <Link className="header__link" to="/">Courses</Link>
+                <br/>
+                <Link className="header__link" to="/login">Login</Link>
+                <br/>
+                <Link className="header__link" to="/signup">Signup</Link>
             </header>
         );
     }

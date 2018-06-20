@@ -3,7 +3,7 @@
 }
 
 body {
-    font-family: Lato;
+    font-family: "Roboto","Helvetica","Arial",sans-serif;
 }
 
 button:focus {
@@ -15,3 +15,7 @@ button:focus {
     margin: 0 auto;
 }
 
+.mdl-button--fab {
+    background-color: #F98866;
+    color: white;
+}
