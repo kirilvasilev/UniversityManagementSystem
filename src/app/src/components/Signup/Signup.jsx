@@ -33,14 +33,18 @@ export class Signup extends React.Component {
         console.log(this.isValidSignup());
         if(this.isValidSignup()) {
             console.log({
-                firstname: this.state.firstname,
-                lastname: this.state.lastname,
+                name: {
+                    firstname: this.state.firstname,
+                    lastname: this.state.lastname
+                },
                 username: this.state.username,
                 password: this.state.password
             });
             this.props.signup({
-                firstname: this.state.firstname,
-                lastname: this.state.lastname,
+                name: {
+                    firstname: this.state.firstname,
+                    lastname: this.state.lastname
+                },
                 username: this.state.username,
                 password: this.state.password 
             });
@@ -97,7 +101,7 @@ export class Signup extends React.Component {
                     onChange={this.handleChange} 
                     placeholder="Password"/>
                 </div>
-                <button type="submit" className="mdl-button mdl-js-button submit-button" onClick={this.handleLogin}>Sign up</button>    
+                <button type="submit" className="mdl-button mdl-js-button submit-button" onClick={this.handleLogin}>Sign up And Login</button>    
             </form>
         );
     }

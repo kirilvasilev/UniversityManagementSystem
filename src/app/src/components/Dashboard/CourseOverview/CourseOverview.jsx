@@ -35,7 +35,7 @@ export class CourseOverview extends React.Component {
                         onClose={() => this.setState({showPortal: false})}/>
                     
                 </div>
-                {this.props.courses && this.props.courses.length > 0 && this.props.courses.map(course => <Course key={course.id} course={course}/>)}
+                {this.props.courses && this.props.courses.length > 0 && this.props.courses.map(course => <Course key={(Math.random() * 10000)} course={course}/>)}
             </div>
         );
     }

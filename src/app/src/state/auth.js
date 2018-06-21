@@ -31,7 +31,11 @@ export const signup = userCredentials => async dispatch => {
     const localhost = "http://localhost:3000";
     try {
         const rsp = await axios.post(`${localhost}/register`, userCredentials);
-        console.log(rsp);
+        dispatch({
+            type: LOG_IN,
+            payload: rsp.data.token
+        });
+        if(rsp.statusText === "Created") document.getElementsByClassName("header__link")[0].click();
     } catch(error) {
         // handle error here
     }

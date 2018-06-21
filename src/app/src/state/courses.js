@@ -32,6 +32,8 @@ export const fetchCourses = pageNumber => async dispatch => {
 export const createCourse = course => async dispatch => {
     const localhost = "http://localhost:3000";
     try {
+        axios.defaults.headers.common['Authorization'] = 
+                                'JWT ' + localStorage.getItem('jwt');
         const rsp = await axios.post(`${localhost}/api/v1/courses`, course);
         dispatch({
             type: CREATE_COURSE,
@@ -61,6 +63,7 @@ export const deleteCourse = courseId => async dispatch => {
     const userId = 1;  //get id from user
     try {
         const rsp = await axios.delete(`${localhost}/api/v1/${userId}`, {"id": courseId});
+        console.log(rsp.data)
         dispatch({
             type: DELETE_COURSE,
             payload: rsp.data
@@ -76,6 +79,12 @@ export default function(state = initialState, action={type, payload}) {
         case FETCH_COURSES:
             return [
                 ...action.payload
+            ];
+        
+        case CREATE_COURSE:
+            return [
+                ...state,
+                action.payload
             ];
         
         default:

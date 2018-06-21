@@ -1,27 +1,26 @@
 import React, { Component } from "react";
 import "./Modal.css";
 
-class Modal extends Component {
+export class Modal extends Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      name: "",
-      description: "",
-      schedules: [{
-        dayOfWeek: 1,
-        time: "00:00:00",
-        room: ""
-      }],
-      credits: "",
-      lecturer: "",
+        name: "",
+        description: "",
+        dayOfWeek: "",
+        time: "",
+        room: "",
+        credits: "",
+        lecturer: "",
     };
 }
 
 isValidCourse() {
     return this.state.name.length > 0 && this.state.description.length > 0
-    && this.state.credits > 0 && this.state.lecturer > 0 && this.state.schedules.length > 0;
+    && this.state.credits > 0 && this.state.lecturer > 0 && this.state.time.length > 0
+    && this.state.dayOfWeek > 0 && this.state.room > 0;
 }
 
 handleChange = event => {
@@ -33,12 +32,16 @@ handleChange = event => {
 createCourse = event => {
     event.preventDefault();
     if(this.isValidCourse()) {
-        console.log({
-            "name": this.state.name,
-            "description": this.state.description,
-            "schedules": this.state.schedules,
-            "credits": this.state.credits,
-            "lecturer": this.state.lecturer
+        this.props.createCourse({
+            name: this.state.name,
+            description: this.state.description,
+            schedules: [{
+                dayOfWeek: this.state.dayOfWeek,
+                time: this.state.time,
+                room: this.state.room
+            }],
+            credits: this.state.credits,
+            lecturer: this.state.lecturer
         });
     } else {
         console.log("Invalid course creation, please fill in all the missing fields");
@@ -79,7 +82,7 @@ createCourse = event => {
                     type="text" 
                     id="dayOfWeek" 
                     name="dayOfWeek"
-                    value={this.state.schedules.dayOfWeek}
+                    value={this.state.dayOfWeek}
                     onChange={this.handleChange}
                     placeholder="Day of the week in number: 1-7"/>
                 </div>
@@ -88,7 +91,7 @@ createCourse = event => {
                     type="text" 
                     id="time" 
                     name="time"
-                    value={this.state.schedules.time}
+                    value={this.state.time}
                     onChange={this.handleChange}
                     placeholder="Time: hh:mm:ss"/>
                 </div>
@@ -97,7 +100,7 @@ createCourse = event => {
                     type="text" 
                     id="room" 
                     name="room"
-                    value={this.state.schedules.room}
+                    value={this.state.room}
                     onChange={this.handleChange}
                     placeholder="Room"/>
                 </div>
