@@ -34,10 +34,10 @@ class AuthRouter {
                 let flatUser = {
                     _id: user._id,
                     username: user.username,
-                    userType: user.userType.toString()
+                    isLecturer: user.userType == UserType.Lecturer
                 }
-                res.status(HttpStatus.CREATED).json({token: jwt.sign(flatUser, 'SUPERSECRETCODE')});
-            }          
+                res.status(HttpStatus.CREATED).json({ user: flatUser, token: jwt.sign(flatUser, 'SUPERSECRETCODE') });
+            }
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'Register');
         }
@@ -53,9 +53,9 @@ class AuthRouter {
                 let flatUser = {
                     _id: user._id,
                     username: user.username,
-                    userType: user.userType.toString()
+                    isLecturer: user.userType == UserType.Lecturer
                 }
-                res.status(HttpStatus.ACCEPTED).json({ token: jwt.sign(flatUser, 'SUPERSECRETCODE') });
+                res.status(HttpStatus.ACCEPTED).json({ user: flatUser, token: jwt.sign(flatUser, 'SUPERSECRETCODE') });
                 return;
             }
             res.status(HttpStatus.UNAUTHORIZED).json({ message: 'Wrong username or password.' });
