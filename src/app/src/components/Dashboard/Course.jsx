@@ -5,6 +5,11 @@ import './Course.css'
 
 export class Course extends React.Component {
 
+    deleteCourse(id) {
+        console.log("delete", id);
+        this.props.deleteCourse(id);
+    }
+
     render() {
         return (
             <div className="mdl-cell course-overview__course">
@@ -21,7 +26,7 @@ export class Course extends React.Component {
                     <i className="material-icons">edit</i>
                     </button>
                     <button className="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect" onClick={() => {
-                        console.log("delete", this.props.course.id)
+                        this.deleteCourse(this.props.course._id)
                     }}>
                     <i className="material-icons">delete</i>
                     </button>

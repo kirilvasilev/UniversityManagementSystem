@@ -60,9 +60,8 @@ export const updateCourse = course => async dispatch => {
 
 export const deleteCourse = courseId => async dispatch => {
     const localhost = "http://localhost:3000";
-    const userId = 1;  //get id from user
     try {
-        const rsp = await axios.delete(`${localhost}/api/v1/${userId}`, {"id": courseId});
+        const rsp = await axios.delete(`${localhost}/api/v1/courses/${courseId}`, {"id": courseId});
         console.log(rsp.data)
         dispatch({
             type: DELETE_COURSE,

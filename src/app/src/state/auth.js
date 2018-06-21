@@ -6,7 +6,8 @@ export const SIGN_UP = 'SIGN_UP';
 
 // State
 const initialState = {
-    jwt: ""
+    jwt: "",
+    isLecturer: false,
 }
 
 //Actions
@@ -17,7 +18,7 @@ export const login = userCredentials => async dispatch => {
             const rsp = await axios.post(`${localhost}/login`, userCredentials);
             dispatch({
                 type: LOG_IN,
-                payload: rsp.data.token
+                payload: rsp.data
             });
             window.localStorage.jwt = rsp.data.token;
             document.getElementsByClassName("header__link")[0].click();
@@ -33,7 +34,7 @@ export const signup = userCredentials => async dispatch => {
         const rsp = await axios.post(`${localhost}/register`, userCredentials);
         dispatch({
             type: LOG_IN,
-            payload: rsp.data.token
+            payload: rsp.data
         });
         if(rsp.statusText === "Created") document.getElementsByClassName("header__link")[0].click();
     } catch(error) {
@@ -47,7 +48,8 @@ export default function(state = initialState, action={type, payload}) {
         case LOG_IN:
             return {
                 ...state,
-                jwt: action.payload || 0
+                isLecturer: action.payload.user.isLecturer,
+                jwt: action.payload.token || 0
             };
         
         default:

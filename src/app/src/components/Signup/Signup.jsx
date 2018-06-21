@@ -32,14 +32,6 @@ export class Signup extends React.Component {
         event.preventDefault();
         console.log(this.isValidSignup());
         if(this.isValidSignup()) {
-            console.log({
-                name: {
-                    firstname: this.state.firstname,
-                    lastname: this.state.lastname
-                },
-                username: this.state.username,
-                password: this.state.password
-            });
             this.props.signup({
                 name: {
                     firstname: this.state.firstname,

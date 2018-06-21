@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from "react-router-dom";
-import Course from '../Course';
+import CourseContainer from '../../../containers/CourseContainer';
 import './CourseOverview.css';
 
 import Portal from '../../Portal/Portal';
@@ -35,7 +35,7 @@ export class CourseOverview extends React.Component {
                         onClose={() => this.setState({showPortal: false})}/>
                     
                 </div>
-                {this.props.courses && this.props.courses.length > 0 && this.props.courses.map(course => <Course key={(Math.random() * 10000)} course={course}/>)}
+                {this.props.courses && this.props.courses.length > 0 && this.props.courses.map(course => <CourseContainer key={(Math.random() * 10000)} course={course}/>)}
             </div>
         );
     }
