@@ -1,11 +1,12 @@
 import { connect } from 'react-redux';
 import { dispatch, bindActionCreators } from 'redux';
-import { createCourse } from '../state/courses';
+import { createCourse, updateCourse } from '../state/courses';
 import { Modal } from '../components/Portal/Modal/Modal';
 
 const mapDispatchToProps = 
 (dispatch) => bindActionCreators({
-    createCourse
+    createCourse,
+    updateCourse
 }, dispatch);
 
 export default connect(null, mapDispatchToProps)(Modal);

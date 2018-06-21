@@ -33,8 +33,6 @@ export const fetchCourses = pageNumber => async dispatch => {
 export const createCourse = course => async dispatch => {
     const localhost = "http://localhost:3000";
     try {
-        axios.defaults.headers.common['Authorization'] = 
-                                'JWT ' + localStorage.getItem('jwt');
         const rsp = await axios.post(`${localhost}/api/v1/courses`, course);
         dispatch({
             type: CREATE_COURSE,
@@ -47,9 +45,13 @@ export const createCourse = course => async dispatch => {
 
 export const updateCourse = course => async dispatch => {
     const localhost = "http://localhost:3000";
-    const userId = 1;  //get id from user
+    const index = store.getState().courses.map(course => course._id).indexOf(course._id);
     try {
-        const rsp = await axios.put(`${localhost}/api/v1/${userId}`, course);
+        const rsp = await axios.put(`${localhost}/api/v1/courses/${course._id}`, course);
+        dispatch({
+            type: DELETE_COURSE,
+            payload: index
+        });
         dispatch({
             type: UPDATE_COURSE,
             payload: rsp.data
@@ -86,6 +88,12 @@ export default function(state = initialState, action={type, payload}) {
                 ...state,
                 action.payload
             ];
+
+        case UPDATE_COURSE:
+            return [
+                ...state,
+                action.payload
+            ]
         
         case DELETE_COURSE:
             return [
