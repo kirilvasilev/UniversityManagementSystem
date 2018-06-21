@@ -1,4 +1,5 @@
 import axios from 'axios';
+import store from './store';
 
 // I choose the redux duck approach, more info here: https://github.com/erikras/ducks-modular-redux
 
@@ -32,8 +33,6 @@ export const fetchCourses = pageNumber => async dispatch => {
 export const createCourse = course => async dispatch => {
     const localhost = "http://localhost:3000";
     try {
-        axios.defaults.headers.common['Authorization'] = 
-                                'JWT ' + localStorage.getItem('jwt');
         const rsp = await axios.post(`${localhost}/api/v1/courses`, course);
         dispatch({
             type: CREATE_COURSE,
@@ -46,9 +45,13 @@ export const createCourse = course => async dispatch => {
 
 export const updateCourse = course => async dispatch => {
     const localhost = "http://localhost:3000";
-    const userId = 1;  //get id from user
+    const index = store.getState().courses.map(course => course._id).indexOf(course._id);
     try {
-        const rsp = await axios.put(`${localhost}/api/v1/${userId}`, course);
+        const rsp = await axios.put(`${localhost}/api/v1/courses/${course._id}`, course);
+        dispatch({
+            type: DELETE_COURSE,
+            payload: index
+        });
         dispatch({
             type: UPDATE_COURSE,
             payload: rsp.data
@@ -60,12 +63,12 @@ export const updateCourse = course => async dispatch => {
 
 export const deleteCourse = courseId => async dispatch => {
     const localhost = "http://localhost:3000";
+    const index = store.getState().courses.map(course => course._id).indexOf(courseId);
     try {
         const rsp = await axios.delete(`${localhost}/api/v1/courses/${courseId}`, {"id": courseId});
-        console.log(rsp.data)
         dispatch({
             type: DELETE_COURSE,
-            payload: rsp.data
+            payload: index
         });
     } catch(error) {
         // handle error here
@@ -84,6 +87,18 @@ export default function(state = initialState, action={type, payload}) {
             return [
                 ...state,
                 action.payload
+            ];
+
+        case UPDATE_COURSE:
+            return [
+                ...state,
+                action.payload
+            ]
+        
+        case DELETE_COURSE:
+            return [
+                ...state.slice(0, action.payload),
+                ...state.slice(action.payload + 1)
             ];
         
         default:

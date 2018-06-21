@@ -3,10 +3,18 @@ import PropTypes from 'prop-types';
 import { clickCatch, formatDate } from '../../utils/utils';
 import './Course.css'
 
+import Portal from '../Portal/Portal';
+
 export class Course extends React.Component {
 
+    constructor() {
+        super();
+        this.state = {
+          showPortal: false
+        };
+    }
+
     deleteCourse(id) {
-        console.log("delete", id);
         this.props.deleteCourse(id);
     }
 
@@ -18,13 +26,22 @@ export class Course extends React.Component {
                 <h5>Course lecturer: {this.props.course.lecturer}</h5>
                 <h5>Course credits: {this.props.course.credits}</h5>
                 <h4>Course Schedule:</h4>
-                {this.props.course.schedules && this.props.course.schedules.map(schedule => <p key={schedule.time + schedule.dayOfWeek}>{schedule.dayOfWeek}, {schedule.time}, room: {schedule.room}</p>)}
+                {this.props.course.schedules && <p>{this.props.course.schedules[0].dayOfWeek}, {this.props.course.schedules[0].time}, room: {this.props.course.schedules[0].room}</p> }
                 <div className="course-overview__edit-delete">
-                    <button className="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect" onClick={() => {
-                        console.log("edit")
-                    }}>
-                    <i className="material-icons">edit</i>
-                    </button>
+                    {
+                        <React.Fragment>
+                            <button className="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect" onClick={() =>
+                                this.setState({ showPortal: true })}>
+                                <i className="material-icons">edit</i>
+                            </button>
+                            <Portal
+                            open={this.state.showPortal}
+                            header="Update a course"
+                            course={this.props.course}
+                            onClose={() => this.setState({showPortal: false})}/>
+                        </React.Fragment>
+                    }
+                    
                     <button className="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect" onClick={() => {
                         this.deleteCourse(this.props.course._id)
                     }}>
