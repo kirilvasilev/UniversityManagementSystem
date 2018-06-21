@@ -41,8 +41,10 @@ export class Modal extends Component {
                 <span>{this.props.header}</span>
                 <button onClick={() => this.props.onClose()}>✗</button>
             </header>
-
-            <form className="app__login-form modal-content">
+            
+            {
+                this.props.isLecturer ?
+                <form className="app__login-form modal-content">
                     <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input className="mdl-textfield__input name" 
                         type="text" 
@@ -111,7 +113,14 @@ export class Modal extends Component {
                             ? <button type="submit" className="mdl-button mdl-js-button submit-button" onClick={this.updateCourse}>Modify</button>
                             : <button type="submit" className="mdl-button mdl-js-button submit-button" onClick={this.createCourse}>Create</button>
                     }   
-                </form>
+                </form> :
+                (this.props.course && this.props.course.length > 0 && this.props.course.map(course => <h1 key={(Math.random() * 10000)}>{course.name} 
+                    <button className="mdl-button mdl-js-button mdl-button--fab course-overview__enroll" onClick={() =>
+                                console.log(course)}>
+                        <i className="material-icons">library_add</i>
+                    </button>
+                </h1>))
+            }
             </div>
         </React.Fragment>
         ) : null;

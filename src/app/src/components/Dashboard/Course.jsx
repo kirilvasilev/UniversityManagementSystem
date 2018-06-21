@@ -18,6 +18,10 @@ export class Course extends React.Component {
         this.props.deleteCourse(id);
     }
 
+    deleteUserCourse(id) {
+        this.props.deleteUserCourse(id);
+    }
+
     render() {
         return (
             <div className="mdl-cell course-overview__course">
@@ -29,6 +33,7 @@ export class Course extends React.Component {
                 {this.props.course.schedules && <p>{this.props.course.schedules[0].dayOfWeek}, {this.props.course.schedules[0].time}, room: {this.props.course.schedules[0].room}</p> }
                 <div className="course-overview__edit-delete">
                     {
+                        this.props.isLecturer &&
                         <React.Fragment>
                             <button className="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect" onClick={() =>
                                 this.setState({ showPortal: true })}>
@@ -38,15 +43,23 @@ export class Course extends React.Component {
                             open={this.state.showPortal}
                             header="Update a course"
                             course={this.props.course}
+                            isLecturer={true}
                             onClose={() => this.setState({showPortal: false})}/>
                         </React.Fragment>
                     }
-                    
-                    <button className="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect" onClick={() => {
-                        this.deleteCourse(this.props.course._id)
-                    }}>
-                    <i className="material-icons">delete</i>
-                    </button>
+                    {
+                        this.props.isLecturer ?
+                        <button className="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect" onClick={() => {
+                            this.deleteCourse(this.props.course._id)
+                        }}>
+                        <i className="material-icons">delete</i>
+                        </button> :
+                        <button className="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect" onClick={() => {
+                            this.deleteUserCourse(this.props.course._id)
+                        }}>
+                        <i className="material-icons">delete</i>
+                        </button>
+                    }
                 </div>
             </div>
         );

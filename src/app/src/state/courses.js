@@ -5,17 +5,20 @@ import store from './store';
 
 // Constants
 export const FETCH_COURSES = 'FETCH_COURSES';
-export const CREATE_COURSE = 'CREATE_COURSE';
+export const FETCH_USER_COURSES = 'FETCH_COURSES';
 export const DELETE_COURSE = 'DELETE_COURSE';
+export const DELETE_USER_COURSE = 'DELETE_COURSE';
+export const CREATE_COURSE = 'CREATE_COURSE';
 export const UPDATE_COURSE = 'UPDATE_COURSE';
 
 // State
 const initialState = {
-    courses: []
+    courses: [],
+    userCourses: []
 }
 
 //Actions
-export const fetchCourses = pageNumber => async dispatch => {
+export const fetchCourses = () => async dispatch => {
     const localhost = "http://localhost:3000";
     try {
         axios.defaults.headers.common['Authorization'] = 
@@ -23,6 +26,21 @@ export const fetchCourses = pageNumber => async dispatch => {
         const rsp = await axios.get(`${localhost}/api/v1/courses`);
         dispatch({
             type: FETCH_COURSES,
+            payload: rsp.data
+        });
+    } catch(error) {
+        // handle error here
+    }
+}
+
+export const fetchUserSpecificCourses = () => async dispatch => {
+    const localhost = "http://localhost:3000";
+    try {
+        axios.defaults.headers.common['Authorization'] = 
+                                'JWT ' + localStorage.getItem('jwt');
+        const rsp = await axios.get(`${localhost}/api/v1/users/courses`);
+        dispatch({
+            type: FETCH_USER_COURSES,
             payload: rsp.data
         });
     } catch(error) {
@@ -63,7 +81,7 @@ export const updateCourse = course => async dispatch => {
 
 export const deleteCourse = courseId => async dispatch => {
     const localhost = "http://localhost:3000";
-    const index = store.getState().courses.map(course => course._id).indexOf(courseId);
+    const index = store.getState().courses.courses.map(course => course._id).indexOf(courseId);
     try {
         const rsp = await axios.delete(`${localhost}/api/v1/courses/${courseId}`, {"id": courseId});
         dispatch({
@@ -75,31 +93,70 @@ export const deleteCourse = courseId => async dispatch => {
     }
 }
 
+export const deleteUserCourse = courseId => async dispatch => {
+    const localhost = "http://localhost:3000";
+    const index = store.getState().courses.courses.map(course => course._id).indexOf(courseId);
+    try {
+        const rsp = await axios.delete(`${localhost}/api/v1/courses/${courseId}`, {"id": courseId});
+        dispatch({
+            type: DELETE_USER_COURSE,
+            payload: index
+        });
+    } catch(error) {
+        // handle error here
+    }
+}
+
 // Reducer
 export default function(state = initialState, action={type, payload}) {
     switch(action.type) {
         case FETCH_COURSES:
-            return [
-                ...action.payload
-            ];
+            return {
+                ...state,
+                courses: [...action.payload]
+            };
+
+        case FETCH_USER_COURSES:
+            return {
+                ...state,
+                userCourses: [...action.payload]
+            };
         
         case CREATE_COURSE:
-            return [
+            return {
                 ...state,
-                action.payload
-            ];
+                courses: [
+                    ...state.courses,
+                    action.payload
+                ]
+            };
 
         case UPDATE_COURSE:
-            return [
+            return {
                 ...state,
-                action.payload
-            ]
+                courses: [
+                    ...state,
+                    action.payload
+                ]
+            };
         
         case DELETE_COURSE:
-            return [
-                ...state.slice(0, action.payload),
-                ...state.slice(action.payload + 1)
-            ];
+            return {
+                ...state,
+                courses: [
+                    ...state.slice(0, action.payload),
+                    ...state.slice(action.payload + 1)
+                ]
+            };
+        
+        case DELETE_USER_COURSE:
+            return {
+                ...state,
+                userCourses: [
+                    ...state.slice(0, action.payload),
+                    ...state.slice(action.payload + 1)
+                ]
+            };    
         
         default:
             return state;
