@@ -11,6 +11,7 @@
   .app__modal-dialog {
     position: fixed;
     max-height: 600px;
+    min-width: 400px;
     top: 10%;
     left: 35%;
     right: 35%;

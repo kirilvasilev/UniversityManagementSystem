@@ -55,7 +55,7 @@ createCourse = event => {
         <div role="dialog" className="app__modal-dialog">
           <header>
             <span>{this.props.header}</span>
-            <button onClick={() => this.props.onClose()}>✗ </button>
+            <button onClick={() => this.props.onClose()}>✗</button>
           </header>
 
           <form className="app__login-form modal-content">
