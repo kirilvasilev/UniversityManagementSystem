@@ -4,6 +4,7 @@ import * as HttpStatus from 'http-status-codes';
 import { GetCourseRepo } from '../container/ContainerProvider';
 import { handleError } from '../handlers/ErrorHandler';
 import { log, LogLevel } from '../logger/ILogger';
+import { Course } from '../DTO/Course';
 
 
 const CONTROLLER_NAME = 'CourseRouter';
@@ -22,11 +23,11 @@ class CourseRouter {
     public async GetCourses(req: Request, res: Response) {
         let repo = GetCourseRepo();
         try {
-            let courses = await repo.find({ deleted: false }, '-deleted -deletedAt', 'users');
+            let courses = await repo.find({}, null, null, 'lecturer');
             if (courses) {
-                res.status(HttpStatus.OK).json(courses);
+                res.status(HttpStatus.OK).json(courses.map(course => new Course(course)));
             } else {
-                res.status(HttpStatus.NOT_FOUND).json({ message: 'Course not found.' });
+                res.status(HttpStatus.NOT_FOUND).json({ message: 'Courses not found.' });
             }
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'GetCourse');
@@ -37,9 +38,9 @@ class CourseRouter {
     public async GetCourse(req: Request, res: Response) {
         let repo = GetCourseRepo();
         try {
-            let course = await repo.findById(req.params.id);
+            let course = await repo.findById(req.params.id, 'lecturer');
             if (course && !course.deleted) {
-                res.status(HttpStatus.OK).json(course);
+                res.status(HttpStatus.OK).json(new Course(course));
             } else {
                 res.status(HttpStatus.NOT_FOUND).json({ message: 'Course not found.' });
             }
@@ -51,9 +52,10 @@ class CourseRouter {
     public async CreateCourse(req: Request, res: Response) {
         let repo = GetCourseRepo();
         try {
-            console.log(req.body);
+            if(req.body.lecturer == undefined) req.body.lecturer = (req as any).user._id
             let course = await repo.create(req.body);
-            res.status(HttpStatus.CREATED).json(course);
+            let createdCourse = await repo.findById(course.id, 'lecturer');
+            res.status(HttpStatus.CREATED).json(new Course(course));
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'CreateCourse');
         }
@@ -85,7 +87,7 @@ class CourseRouter {
                 }
 
                 course = await repo.update(req.params.id, req.body);
-                res.status(HttpStatus.ACCEPTED).json(course);
+                res.status(HttpStatus.ACCEPTED).json(new Course(course));
             }
             else {
                 res.status(HttpStatus.NOT_FOUND).json({ message: 'Course not found.' });
@@ -108,7 +110,7 @@ class CourseRouter {
             if (!schedule) {
                 course.schedules.push(req.body)
                 course = await course.save();
-                res.status(HttpStatus.CREATED).json(course);
+                res.status(HttpStatus.CREATED).json(new Course(course));
             }
             else {
                 res.status(HttpStatus.CONFLICT).json({ message: 'Schedule already exists.' });
@@ -130,7 +132,7 @@ class CourseRouter {
             );
             course.schedules.splice(course.schedules.indexOf(schedule), 1);
             course = await course.save();
-            res.status(HttpStatus.ACCEPTED).json(course);
+            res.status(HttpStatus.ACCEPTED).json(new Course(course));
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'RemoveSchedule');
         }

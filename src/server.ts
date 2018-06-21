@@ -18,6 +18,10 @@ import {
     LogLevel,
     log
 } from './logger/ILogger';
+import { env } from 'process';
+import { USERS, COURSES } from './repositories/MockData';
+import { UserSchema } from './schemas/UserSchema';
+import { CourseSchema } from './schemas/CourseSchema';
 
 //import IndexRouter from './routes/IndexRouter';
 
@@ -38,10 +42,18 @@ class Server {
         // set up mongoose
         const MONGO_URI = 'mongodb://localhost/ums';
         mongoose.connect(MONGO_URI || process.env.MONGODB_URI).then(
-            () => { /** ready to use. The `mongoose.connect()` promise resolves to undefined. */
+            async () => { /** ready to use. The `mongoose.connect()` promise resolves to undefined. */
                 log(`Connected to MongoDB at ${MONGO_URI || process.env.MONGODB_URI}!`)
-                // mongoose.connection.collections['users'].drop( (err) =>
-                //     console.log(`collection users dropped`));
+                if(!env.production) {
+                    await mongoose.connection.collections['users'].drop();
+                    console.log(`collection users dropped`);
+                    await mongoose.connection.collections['courses'].drop();
+                    console.log(`collection courses dropped`);
+                    USERS.forEach(async user => await UserSchema.create(user));
+                    COURSES.forEach(async course => await CourseSchema.create(course));
+                    console.log(`finished populating data`);
+                }
+
             }).catch(err => {
                 log("MongoDB connection error. Please make sure MongoDB is running. " + err, 'Server', 'config', LogLevel.Error);
                 process.exit();

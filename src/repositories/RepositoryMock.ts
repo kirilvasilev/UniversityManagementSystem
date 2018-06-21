@@ -86,198 +86,23 @@ export class RepositoryMock<T extends BaseMock> implements IRepositoryBase<T>{
     }
 }
 
-export class RepositoryUsersMock extends RepositoryMock<IUserModelMock> {
-    /**
-     *
-     */
-    constructor() {
-        super(USERS);
+// export class RepositoryUsersMock extends RepositoryMock<IUserModelMock> {
+//     /**
+//      *
+//      */
+//     constructor() {
+//         super(USERS);
 
-    }
-}
+//     }
+// }
 
-export class RepositoryCoursesMock extends RepositoryMock<ICourseModelMock> {
-    /**
-     *
-     */
-    constructor() {
-        super(COURSES);
+// export class RepositoryCoursesMock extends RepositoryMock<ICourseModelMock> {
+//     /**
+//      *
+//      */
+//     constructor() {
+//         super(COURSES);
 
-    }
-}
+//     }
+// }
 
-let USERS: IUserModelMock[] = [
-    {
-        _id: "99999",
-        name: {
-            first: "admin",
-            last: "admin"
-        },
-        username: "admin",
-        password: "admin",
-        userType: UserType.Lecturer,
-        courses: null,
-        createdAt: new Date(),
-        deleted: false,
-        deletedAt: null
-    },
-    {
-        _id: "1",
-        name: {
-            first: "Georgi",
-            last: "Georgiev"
-        },
-        username: "georgi",
-        password: "111111",
-        userType: UserType.Lecturer,
-        courses: null,
-        createdAt: new Date(),
-        deleted: false,
-        deletedAt: null
-    },
-    {
-        _id: "2",
-        name: {
-            first: "Ivailo",
-            last: "Ivailov"
-        },
-        username: "ivailo",
-        password: "111111",
-        userType: UserType.Lecturer,
-        courses: null,
-        createdAt: new Date(),
-        deleted: false,
-        deletedAt: null
-    },
-    {
-        _id: "3",
-        name: {
-            first: "Ivan",
-            last: "Ivanov"
-        },
-        username: "ivan",
-        password: "111111",
-        userType: UserType.Student,
-        courses: [{
-            creditScore: 4,
-            course: "1"
-        },
-        {
-            creditScore: 3,
-            course: "2"
-        }],
-        createdAt: new Date(),
-        deleted: false,
-        deletedAt: null
-    },
-    {
-        _id: "4",
-        name: {
-            first: "Mario",
-            last: "Mariov"
-        },
-        username: "mario",
-        password: "111111",
-        userType: UserType.Student,
-        courses: [{
-            creditScore: 4,
-            course: "1"
-        },
-        {
-            creditScore: 2,
-            course: "3"
-        }],
-        createdAt: new Date(),
-        deleted: false,
-        deletedAt: null
-    },
-    {
-        _id: "5",
-        name: {
-            first: "Ilia",
-            last: "Iliev"
-        },
-        username: "ilia",
-        password: "111111",
-        userType: UserType.Student,
-        courses: [{
-            creditScore: 5,
-            course: "2"
-        },
-        {
-            creditScore: 4,
-            course: "3"
-        }],
-        createdAt: new Date(),
-        deleted: false,
-        deletedAt: null
-    }
-];
-
-let COURSES: Array<ICourseModelMock> = [
-    {
-        _id: "1",
-        name: "Informatika",
-        description: "",
-        schedules: [{
-            dayOfWeek: 1,
-            time: "11:30:00",
-            room: "301"
-        },
-        {
-            dayOfWeek: 1,
-            time: "12:30:00",
-            room: "302"
-        }],
-        credits: 5,
-        lecturer: "1",
-        createdAt: new Date(),
-        deleted: false,
-        deletedAt: null
-    },
-    {
-        _id: "2",
-        name: "Statistika",
-        description: "",
-        schedules: [{
-            dayOfWeek: 1,
-            time: "11:30:00",
-            room: "101"
-        },
-        {
-            dayOfWeek: 2,
-            time: "11:30:00",
-            room: "101"
-        },
-        {
-            dayOfWeek: 4,
-            time: "11:30:00",
-            room: "101"
-        }],
-        credits: 5,
-        lecturer: "2",
-        createdAt: new Date(),
-        deleted: false,
-        deletedAt: null
-    },
-    {
-        _id: "3",
-        name: "Matematika",
-        description: "",
-        schedules: [{
-            dayOfWeek: 1,
-            time: "15:30:00",
-            room: "301"
-        },
-        {
-            dayOfWeek: 1,
-            time: "16:30:00",
-            room: "201"
-        }],
-        credits: 5,
-        lecturer: "2",
-        createdAt: new Date(),
-        deleted: false,
-        deletedAt: null
-    }
-]

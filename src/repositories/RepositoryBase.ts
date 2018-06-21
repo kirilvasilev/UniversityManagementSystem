@@ -1,9 +1,10 @@
 import { DocumentQuery, Types, Model, Document } from 'mongoose';
+import { IUMSModel } from '../models/IUMSModel';
 
 
 export interface IRepositoryBase<T> {
     retrieve(): Promise<T[]>;
-    findById(id: string): Promise<T>;
+    findById(id: string, populate?: string): Promise<T>;
     findOne(cond?: Object): Promise<T>;
     find(cond?: Object, fields?: Object, options?: Object, populate?: String): Promise<T[]>;
     create(item: T): Promise<T>;
@@ -12,7 +13,7 @@ export interface IRepositoryBase<T> {
     toObjectId(_id: string): any;
 }
 
-export class RepositoryBase<T extends Document> implements IRepositoryBase<T> {
+export class RepositoryBase<T extends IUMSModel> implements IRepositoryBase<T> {
 
     private _model: Model<T>;
 
@@ -21,6 +22,7 @@ export class RepositoryBase<T extends Document> implements IRepositoryBase<T> {
     }
 
     create(item: T): Promise<T> {
+        item.createdAt = new Date()
         return this._model.create(item);
     }
 
@@ -36,7 +38,10 @@ export class RepositoryBase<T extends Document> implements IRepositoryBase<T> {
         return this._model.remove({ _id: this.toObjectId(_id) }).exec();
     }
 
-    findById(_id: string): Promise<T> {
+    findById(_id: string, populate?: string): Promise<T> {
+        if(populate) {
+            return this._model.findById(this.toObjectId(_id)).populate(populate).exec();
+        }
         return this._model.findById(this.toObjectId(_id)).exec();
     }
 

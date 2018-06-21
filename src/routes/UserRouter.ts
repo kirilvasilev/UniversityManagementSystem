@@ -5,6 +5,8 @@ import { GetUserRepo, GetCourseRepo } from '../container/ContainerProvider';
 import { handleError } from '../handlers/ErrorHandler';
 import { log, LogLevel } from '../logger/ILogger';
 import { UserType } from '../models/UserModel';
+import { User } from '../DTO/User';
+import { Course } from '../DTO/Course';
 
 
 const CONTROLLER_NAME = 'UserRouter';
@@ -24,9 +26,8 @@ class UserRouter {
         let userId = req.params.id || (req as any).user._id;
         try {
             let user = await repo.findById(userId.toString());
-            if (user && !user.deleted) {
-                delete user.password;
-                res.status(HttpStatus.OK).json(user);
+            if (user && !user.deleted) {               
+                res.status(HttpStatus.OK).json(new User(user));
             } else {
                 res.status(HttpStatus.NOT_FOUND).json({ message: 'User not found.' });
             }
@@ -73,7 +74,7 @@ class UserRouter {
                 //TODO: Check if authorized to update userType!
 
                 user = await repo.update(userId.toString(), req.body);
-                res.status(HttpStatus.ACCEPTED).json(user);
+                res.status(HttpStatus.ACCEPTED).json(new User(user));
             }
             else {
                 res.status(HttpStatus.NOT_FOUND).json({ message: 'User not found.' });
@@ -87,8 +88,8 @@ class UserRouter {
         let repo = GetUserRepo();
 
         try {
-            let users = await repo.find({ deleted: false }, '-password -username -deleted', 'courses');
-            res.status(HttpStatus.OK).json(users);
+            let users = await repo.find({ deleted: false }, null, null, 'courses');
+            res.status(HttpStatus.OK).json(users.map(user => new User(user)));
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'GetUsers');
         }
@@ -108,8 +109,8 @@ class UserRouter {
                     let hangingCourses = await courseRepo.find({ lecturer: null });
 
                     res.status(HttpStatus.OK).json({
-                        myCourses: lecturerCourses,
-                        otherCourses: hangingCourses
+                        myCourses: lecturerCourses.map(course => new Course(course)),
+                        otherCourses: hangingCourses.map(course => new Course(course))
                     });
                 }
                 else {
@@ -117,8 +118,8 @@ class UserRouter {
                     let otherCourses = await courseRepo.find({ _id: { $nin: user.courses.map(course => course.course) } });
 
                     res.status(HttpStatus.OK).json({
-                        myCourses: studentCourses,
-                        otherCourses: otherCourses
+                        myCourses: studentCourses.map(course => new Course(course)),
+                        otherCourses: otherCourses.map(course => new Course(course))
                     });
                 }
             }
@@ -137,7 +138,7 @@ class UserRouter {
             let user = await repo.findById(userId.toString());
             user.courses.push({ creditScore: 0, course: repo.toObjectId(req.body.id) })
             user = await user.save();
-            res.status(HttpStatus.CREATED).json(user);
+            res.status(HttpStatus.CREATED).json(new User(user));
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'AddCourse');
         }
