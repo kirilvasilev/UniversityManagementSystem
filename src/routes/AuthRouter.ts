@@ -6,6 +6,7 @@ import { GetUserRepo } from '../container/ContainerProvider';
 import { handleError } from '../handlers/ErrorHandler';
 import { log, LogLevel } from '../logger/ILogger';
 import { UserType } from '../models/UserModel';
+import { User } from '../DTO/User';
 
 
 const CONTROLLER_NAME = 'AuthRouter';
@@ -31,11 +32,7 @@ class AuthRouter {
             else {
                 req.body.userType = users.length > 0 ? UserType.Student : UserType.Lecturer;
                 let user = await repo.create(req.body);
-                let flatUser = {
-                    _id: user._id,
-                    username: user.username,
-                    isLecturer: user.userType == UserType.Lecturer
-                }
+                let flatUser = new User(user);
                 res.status(HttpStatus.CREATED).json({ user: flatUser, token: jwt.sign(flatUser, 'SUPERSECRETCODE') });
             }
         } catch (error) {
@@ -50,11 +47,7 @@ class AuthRouter {
             let user = await repo.findOne({ username: req.body.username });
 
             if (user && user.password === req.body.password) {
-                let flatUser = {
-                    _id: user._id,
-                    username: user.username,
-                    isLecturer: user.userType == UserType.Lecturer
-                }
+                let flatUser = new User(user);
                 res.status(HttpStatus.ACCEPTED).json({ user: flatUser, token: jwt.sign(flatUser, 'SUPERSECRETCODE') });
                 return;
             }
