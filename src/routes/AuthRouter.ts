@@ -48,7 +48,7 @@ class AuthRouter {
 
             if (user && user.password === req.body.password) {
                 let flatUser = new User(user);
-                res.status(HttpStatus.ACCEPTED).json({ user: flatUser, token: jwt.sign(flatUser, 'SUPERSECRETCODE') });
+                res.status(HttpStatus.ACCEPTED).json({ user: flatUser, token: jwt.sign(JSON.stringify(flatUser), 'SUPERSECRETCODE') });
                 return;
             }
             res.status(HttpStatus.UNAUTHORIZED).json({ message: 'Wrong username or password.' });

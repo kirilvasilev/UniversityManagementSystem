@@ -7,15 +7,17 @@ import { log, LogLevel } from '../logger/ILogger';
 import { UserType } from '../models/UserModel';
 import { User } from '../DTO/User';
 import { Course } from '../DTO/Course';
+import { RouterValidator } from './RouterValidator';
 
 
 const CONTROLLER_NAME = 'UserRouter';
 
-class UserRouter {
+class UserRouter extends RouterValidator {
 
     public router: Router;
 
     constructor() {
+        super();
         this.router = Router();
         this.routes();
     }
@@ -26,7 +28,7 @@ class UserRouter {
         let userId = req.params.id || (req as any).user._id;
         try {
             let user = await repo.findById(userId.toString());
-            if (user && !user.deleted) {               
+            if (user && !user.deleted) {
                 res.status(HttpStatus.OK).json(new User(user));
             } else {
                 res.status(HttpStatus.NOT_FOUND).json({ message: 'User not found.' });
@@ -165,19 +167,19 @@ class UserRouter {
 
         this.router.get('/', this.GetUser);
         this.router.delete('/', this.DeleteUser);
-        this.router.put('/', this.UpdateUser);
+        this.router.put('/', [this.ValidateBody, this.UpdateUser]);
 
         this.router.get('/courses', this.GetUserCourses);
-        this.router.post('/courses', this.AddCourse);
+        this.router.post('/courses', [this.ValidateBody, this.AddCourse]);
         this.router.delete('/courses', this.RemoveCourse);
 
-        this.router.get('/:id', this.GetUser);
-        this.router.delete('/:id', this.DeleteUser);
-        this.router.put('/:id', this.UpdateUser);
+        this.router.get('/:id', [this.ValidateId, this.GetUser]);
+        this.router.delete('/:id', [this.ValidateId, this.DeleteUser]);
+        this.router.put('/:id', [this.ValidateId, this.ValidateBody, this.UpdateUser]);
 
-        this.router.get('/:id/courses', this.GetUserCourses);
-        this.router.post('/:id/courses', this.AddCourse);
-        this.router.delete('/:id/courses', this.RemoveCourse);
+        this.router.get('/:id/courses', [this.ValidateId, this.GetUserCourses]);
+        this.router.post('/:id/courses', [this.ValidateId, this.ValidateBody, this.AddCourse]);
+        this.router.delete('/:id/courses', [this.ValidateId, this.RemoveCourse]);
     }
 }
 

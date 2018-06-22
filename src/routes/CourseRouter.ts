@@ -5,17 +5,17 @@ import { GetCourseRepo } from '../container/ContainerProvider';
 import { handleError } from '../handlers/ErrorHandler';
 import { log, LogLevel } from '../logger/ILogger';
 import { Course } from '../DTO/Course';
+import { RouterValidator } from './RouterValidator';
 
 
 const CONTROLLER_NAME = 'CourseRouter';
 
-class CourseRouter {
-
-
+class CourseRouter extends RouterValidator {
 
     public router: Router;
 
     constructor() {
+        super();
         this.router = Router();
         this.routes();
     }
@@ -140,13 +140,13 @@ class CourseRouter {
 
     public routes() {
         this.router.get('/', this.GetCourses);
-        this.router.get('/:id', this.GetCourse);
-        this.router.post('/', this.CreateCourse);
-        this.router.delete('/:id', this.DeleteCourse);
-        this.router.put('/:id', this.UpdateCourse);
+        this.router.get('/:id', [this.ValidateId, this.GetCourse]);
+        this.router.post('/', [this.ValidateBody, this.CreateCourse]);
+        this.router.delete('/:id', [this.ValidateId, this.DeleteCourse]);
+        this.router.put('/:id', [this.ValidateId, this.ValidateBody, this.UpdateCourse]);
 
-        this.router.post('/:id/schedules/', this.AddSchedule);
-        this.router.delete('/:id/schedules/', this.RemoveSchedule);
+        this.router.post('/:id/schedules/', [this.ValidateId, this.AddSchedule]);
+        this.router.delete('/:id/schedules/', [this.ValidateId, this.RemoveSchedule]);
     }
 }
 
