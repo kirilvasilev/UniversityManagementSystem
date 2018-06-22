@@ -25,7 +25,7 @@ class UserRouter extends RouterValidator {
     /** Returns the user's data and the courses he is attending  */
     public async GetUser(req: Request, res: Response) {
         let repo = GetUserRepo();
-        let userId = req.params.id || (req as any).user._id;
+        let userId = req.params.id || (req as any).user.id;
         try {
             let user = await repo.findById(userId.toString());
             if (user && !user.deleted) {
@@ -42,7 +42,7 @@ class UserRouter extends RouterValidator {
 
     public async DeleteUser(req: Request, res: Response) {
         let repo = GetUserRepo();
-        let userId = req.params.id || (req as any).user._id;
+        let userId = req.params.id || (req as any).user.id;
         try {
             let user = await repo.findById(userId.toString());
             user.deleted = true;
@@ -56,7 +56,7 @@ class UserRouter extends RouterValidator {
 
     public async UpdateUser(req: Request, res: Response) {
         let repo = GetUserRepo();
-        let userId = req.params.id || (req as any).user._id;
+        let userId = req.params.id || (req as any).user.id;
         try {
             let user = await repo.findById(userId.toString());
             if (user && !user.deleted) {
@@ -99,15 +99,15 @@ class UserRouter extends RouterValidator {
 
     public async GetUserCourses(req: Request, res: Response) {
         let repo = GetUserRepo();
-        let userId = req.params.id || (req as any).user._id;
+        let userId = req.params.id || (req as any).user.id;
         try {
-            let user = await repo.findById(userId.toString());
+            let user = await repo.findById(userId);
             if (user && !user.deleted) {
 
                 let courseRepo = GetCourseRepo();
 
                 if (user.userType == UserType.Lecturer) {
-                    let lecturerCourses = await courseRepo.find({ lecturer: { $in: user._id } });
+                    let lecturerCourses = await courseRepo.find({ lecturer: { $in: user.id } });
                     let hangingCourses = await courseRepo.find({ lecturer: null });
 
                     res.status(HttpStatus.OK).json({
@@ -135,7 +135,7 @@ class UserRouter extends RouterValidator {
 
     public async AddCourse(req: Request, res: Response) {
         let repo = GetUserRepo();
-        let userId = req.params.id || (req as any).user._id;
+        let userId = req.params.id || (req as any).user.id;
         try {
             let user = await repo.findById(userId.toString());
             user.courses.push({ creditScore: 0, course: repo.toObjectId(req.body.id) })
@@ -148,7 +148,7 @@ class UserRouter extends RouterValidator {
 
     public async RemoveCourse(req: Request, res: Response) {
         let repo = GetUserRepo();
-        let userId = req.params.id || (req as any).user._id;
+        let userId = req.params.id || (req as any).user.id;
         try {
             let courseId = repo.toObjectId(req.body.id);
             let user = await repo.findById(userId.toString());

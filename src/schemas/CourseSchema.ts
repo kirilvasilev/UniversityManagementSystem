@@ -1,10 +1,11 @@
 import { Schema, model, SchemaDefinition } from 'mongoose';
 import { ICourseModel } from '../models/CourseModel';
+import { UMSSchema } from './UMSSchema';
 /**
 *Base Course class that provides extensibility
 *
 */
-class CourseSchemaClass extends Schema {
+class CourseSchemaClass extends UMSSchema {
     constructor(definitions?: SchemaDefinition) {
         super({
             ...{

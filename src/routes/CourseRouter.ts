@@ -23,7 +23,7 @@ class CourseRouter extends RouterValidator {
     public async GetCourses(req: Request, res: Response) {
         let repo = GetCourseRepo();
         try {
-            let courses = await repo.find({}, null, null, 'lecturer');
+            let courses = await repo.find({ deleted: false }, null, null, 'lecturer');
             if (courses) {
                 res.status(HttpStatus.OK).json(courses.map(course => new Course(course)));
             } else {
@@ -52,7 +52,7 @@ class CourseRouter extends RouterValidator {
     public async CreateCourse(req: Request, res: Response) {
         let repo = GetCourseRepo();
         try {
-            if (req.body.lecturer == undefined) req.body.lecturer = (req as any).user._id
+            if (req.body.lecturer == undefined) req.body.lecturer = (req as any).user.id
             let course = await repo.create(req.body);
             let createdCourse = await repo.findById(course.id, 'lecturer');
             res.status(HttpStatus.CREATED).json(new Course(createdCourse));

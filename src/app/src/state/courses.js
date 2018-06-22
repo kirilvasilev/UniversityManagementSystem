@@ -21,14 +21,14 @@ const initialState = {
 export const fetchCourses = () => async dispatch => {
     const localhost = "http://localhost:3000";
     try {
-        axios.defaults.headers.common['Authorization'] = 
-                                'JWT ' + localStorage.getItem('jwt');
+        axios.defaults.headers.common['Authorization'] =
+            'JWT ' + localStorage.getItem('jwt');
         const rsp = await axios.get(`${localhost}/api/v1/courses`);
         dispatch({
             type: FETCH_COURSES,
             payload: rsp.data
         });
-    } catch(error) {
+    } catch (error) {
         // handle error here
     }
 }
@@ -36,14 +36,14 @@ export const fetchCourses = () => async dispatch => {
 export const fetchUserSpecificCourses = () => async dispatch => {
     const localhost = "http://localhost:3000";
     try {
-        axios.defaults.headers.common['Authorization'] = 
-                                'JWT ' + localStorage.getItem('jwt');
+        axios.defaults.headers.common['Authorization'] =
+            'JWT ' + localStorage.getItem('jwt');
         const rsp = await axios.get(`${localhost}/api/v1/users/courses`);
         dispatch({
             type: FETCH_USER_COURSES,
             payload: rsp.data
         });
-    } catch(error) {
+    } catch (error) {
         // handle error here
     }
 }
@@ -56,16 +56,16 @@ export const createCourse = course => async dispatch => {
             type: CREATE_COURSE,
             payload: rsp.data
         });
-    } catch(error) {
+    } catch (error) {
         // handle error here
     }
 }
 
 export const updateCourse = course => async dispatch => {
     const localhost = "http://localhost:3000";
-    const index = store.getState().courses.map(course => course._id).indexOf(course._id);
+    const index = store.getState().courses.map(course => course.id).indexOf(course.id);
     try {
-        const rsp = await axios.put(`${localhost}/api/v1/courses/${course._id}`, course);
+        const rsp = await axios.put(`${localhost}/api/v1/courses/${course.id}`, course);
         dispatch({
             type: DELETE_COURSE,
             payload: index
@@ -74,42 +74,49 @@ export const updateCourse = course => async dispatch => {
             type: UPDATE_COURSE,
             payload: rsp.data
         });
-    } catch(error) {
+    } catch (error) {
         // handle error here
     }
 }
 
 export const deleteCourse = courseId => async dispatch => {
     const localhost = "http://localhost:3000";
-    const index = store.getState().courses.courses.map(course => course._id).indexOf(courseId);
+    const index = store.getState().courses.courses.map(course => course.id).indexOf(courseId);
     try {
-        const rsp = await axios.delete(`${localhost}/api/v1/courses/${courseId}`, {"id": courseId});
+        const rsp = await axios.delete(`${localhost}/api/v1/courses/${courseId}`, {
+            "id": courseId
+        });
         dispatch({
             type: DELETE_COURSE,
             payload: index
         });
-    } catch(error) {
+    } catch (error) {
         // handle error here
     }
 }
 
 export const deleteUserCourse = courseId => async dispatch => {
     const localhost = "http://localhost:3000";
-    const index = store.getState().courses.courses.map(course => course._id).indexOf(courseId);
+    const index = store.getState().courses.courses.map(course => course.id).indexOf(courseId);
     try {
-        const rsp = await axios.delete(`${localhost}/api/v1/courses/${courseId}`, {"id": courseId});
+        const rsp = await axios.delete(`${localhost}/api/v1/courses/${courseId}`, {
+            "id": courseId
+        });
         dispatch({
             type: DELETE_USER_COURSE,
             payload: index
         });
-    } catch(error) {
+    } catch (error) {
         // handle error here
     }
 }
 
 // Reducer
-export default function(state = initialState, action={type, payload}) {
-    switch(action.type) {
+export default function (state = initialState, action = {
+    type,
+    payload
+}) {
+    switch (action.type) {
         case FETCH_COURSES:
             return {
                 ...state,
@@ -121,7 +128,7 @@ export default function(state = initialState, action={type, payload}) {
                 ...state,
                 userCourses: [...action.payload]
             };
-        
+
         case CREATE_COURSE:
             return {
                 ...state,
@@ -139,7 +146,7 @@ export default function(state = initialState, action={type, payload}) {
                     action.payload
                 ]
             };
-        
+
         case DELETE_COURSE:
             return {
                 ...state,
@@ -148,7 +155,7 @@ export default function(state = initialState, action={type, payload}) {
                     ...state.slice(action.payload + 1)
                 ]
             };
-        
+
         case DELETE_USER_COURSE:
             return {
                 ...state,
@@ -156,8 +163,8 @@ export default function(state = initialState, action={type, payload}) {
                     ...state.slice(0, action.payload),
                     ...state.slice(action.payload + 1)
                 ]
-            };    
-        
+            };
+
         default:
             return state;
     }

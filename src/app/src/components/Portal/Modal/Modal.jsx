@@ -14,7 +14,7 @@ export class Modal extends Component {
             room: "",
             credits: "",
             lecturer: "",
-            _id: "noId"
+            id: "noId"
         };
     }
 
@@ -28,7 +28,7 @@ export class Modal extends Component {
             room: this.props.course.schedules && this.props.course.schedules[0].room,
             credits: this.props.course.credits,
             lecturer: this.props.course.lecturer,
-            _id: this.props.course._id
+            id: this.props.course.id
         });
     }
 
@@ -161,7 +161,7 @@ export class Modal extends Component {
         event.preventDefault();
         if(this.isValidCourse()) {
             this.props.updateCourse({
-                _id: this.state._id,
+                id: this.state.id,
                 name: this.state.name,
                 description: this.state.description,
                 schedules: [{

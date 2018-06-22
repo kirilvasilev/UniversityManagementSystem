@@ -9,7 +9,7 @@ export let USERS: Array<any> = [
         username: "admin",
         password: "admin",
         userType: UserType.Lecturer,
-        courses: null,
+        courses: [],
         createdAt: new Date(),
         deleted: false,
         deletedAt: null
@@ -22,7 +22,7 @@ export let USERS: Array<any> = [
         username: "georgi",
         password: "111111",
         userType: UserType.Lecturer,
-        courses: null,
+        courses: [],
         createdAt: new Date(),
         deleted: false,
         deletedAt: null
@@ -35,7 +35,7 @@ export let USERS: Array<any> = [
         username: "ivailo",
         password: "111111",
         userType: UserType.Lecturer,
-        courses: null,
+        courses: [],
         createdAt: new Date(),
         deleted: false,
         deletedAt: null

@@ -6,26 +6,26 @@ export class Login extends React.Component {
 
     constructor(props) {
         super(props);
-    
+
         this.state = {
-          username: "",
-          password: ""
+            username: "",
+            password: ""
         };
     }
-    
+
     isValidLogin() {
         return this.state.username.length > 0 && this.state.password.length > 0;
     }
 
     handleChange = event => {
         this.setState({
-          [event.target.id]: event.target.value
+            [event.target.id]: event.target.value
         });
     }
 
     handleLogin = event => {
         event.preventDefault();
-        if(this.isValidLogin()) {
+        if (this.isValidLogin()) {
             this.props.login({
                 "username": this.state.username,
                 "password": this.state.password
@@ -39,24 +39,24 @@ export class Login extends React.Component {
         return (
             <form className="app__login-form">
                 <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input className="mdl-textfield__input username" 
-                    type="text" 
-                    id="username" 
-                    name="username"
-                    value={this.state.username}
-                    onChange={this.handleChange}
-                    placeholder="Username"/>
+                    <input className="mdl-textfield__input username"
+                        type="text"
+                        id="username"
+                        name="username"
+                        value={this.state.username}
+                        onChange={this.handleChange}
+                        placeholder="Username" />
                 </div>
                 <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input className="mdl-textfield__input password" 
-                    type="password" 
-                    id="password" 
-                    name="password"
-                    value={this.state.password}
-                    onChange={this.handleChange} 
-                    placeholder="Password"/>
+                    <input className="mdl-textfield__input password"
+                        type="password"
+                        id="password"
+                        name="password"
+                        value={this.state.password}
+                        onChange={this.handleChange}
+                        placeholder="Password" />
                 </div>
-                <button type="submit" className="mdl-button mdl-js-button submit-button" onClick={this.handleLogin}>Login</button>    
+                <button type="submit" className="mdl-button mdl-js-button submit-button" onClick={this.handleLogin}>Login</button>
             </form>
         );
     }
