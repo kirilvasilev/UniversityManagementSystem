@@ -52,10 +52,10 @@ class CourseRouter {
     public async CreateCourse(req: Request, res: Response) {
         let repo = GetCourseRepo();
         try {
-            if(req.body.lecturer == undefined) req.body.lecturer = (req as any).user._id
+            if (req.body.lecturer == undefined) req.body.lecturer = (req as any).user._id
             let course = await repo.create(req.body);
             let createdCourse = await repo.findById(course.id, 'lecturer');
-            res.status(HttpStatus.CREATED).json(new Course(course));
+            res.status(HttpStatus.CREATED).json(new Course(createdCourse));
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'CreateCourse');
         }

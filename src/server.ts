@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import {Request, Response, NextFunction} from 'express';
+import { Request, Response, NextFunction } from 'express';
 import express from 'express';
 import bodyParser from 'body-parser';
 import logger from 'morgan';
@@ -44,7 +44,7 @@ class Server {
         mongoose.connect(MONGO_URI || process.env.MONGODB_URI).then(
             async () => { /** ready to use. The `mongoose.connect()` promise resolves to undefined. */
                 log(`Connected to MongoDB at ${MONGO_URI || process.env.MONGODB_URI}!`)
-                if(!env.production) {
+                if (!env.production) {
                     await mongoose.connection.collections['users'].drop();
                     console.log(`collection users dropped`);
                     await mongoose.connection.collections['courses'].drop();
@@ -58,7 +58,7 @@ class Server {
                 log("MongoDB connection error. Please make sure MongoDB is running. " + err, 'Server', 'config', LogLevel.Error);
                 process.exit();
             });
-           // this.app.use(expressHTTP2Workaround({ express:express, http2:http2 }));
+        // this.app.use(expressHTTP2Workaround({ express:express, http2:http2 }));
 
         // configure middleware
         this.app.use(bodyParser.urlencoded({
@@ -73,28 +73,28 @@ class Server {
         // Point static path to dist
         this.app.use(express.static(path.join(__dirname, 'app')));
     }
-    
+
     private UseAuthentication(req: Request, res: Response, next: NextFunction) {
-        if((req as any).user) {
+        if ((req as any).user) {
             next();
         }
         else {
-            res.status(HttpStatus.UNAUTHORIZED).json({message:'Unauthorized user!'});
+            res.status(HttpStatus.UNAUTHORIZED).json({ message: 'Unauthorized user!' });
         }
     }
 
     public routes(): void {
         this.app.use(async (req, res, next) => {
             (req as any).user = undefined;
-            if(req.headers && req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT') {
+            if (req.headers && req.headers.authorization && req.headers.authorization.split(' ')[0] === 'JWT') {
                 try {
                     let decode = await jwt.verify(req.headers.authorization.split(' ')[1], 'SUPERSECRETCODE');
                     (req as any).user = decode;
                     log(`Authenticated user: ${(decode as any).username}`);
                 }
-                catch {  
+                catch {
                 }
-            }  
+            }
             next();
         });
         this.app.use('/api/v1/users', [this.UseAuthentication, UserRouter]);
