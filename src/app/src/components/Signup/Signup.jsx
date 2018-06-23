@@ -14,36 +14,6 @@ export class Signup extends React.Component {
             password2: ""
         };
     }
-    
-    isValidSignup() {
-        return this.state.username.length > 0 
-        && this.state.password.length > 0 
-        && this.state.password2.length > 0
-        && this.state.password === this.state.password2;
-    }
-
-    handleChange = event => {
-        this.setState({
-          [event.target.id]: event.target.value
-        });
-    }
-
-    handleLogin = event => {
-        event.preventDefault();
-        console.log(this.isValidSignup());
-        if(this.isValidSignup()) {
-            this.props.signup({
-                name: {
-                    firstname: this.state.firstname,
-                    lastname: this.state.lastname
-                },
-                username: this.state.username,
-                password: this.state.password 
-            });
-        } else {
-            console.log("Invalid signup");
-        }
-    }
 
     render() {
         return (
@@ -98,6 +68,34 @@ export class Signup extends React.Component {
         );
     }
 
+    isValidSignup() {
+        return this.state.username.length > 0 
+        && this.state.password.length > 0 
+        && this.state.password2.length > 0
+        && this.state.password === this.state.password2;
+    }
+
+    handleChange = event => {
+        this.setState({
+          [event.target.id]: event.target.value
+        });
+    }
+
+    handleLogin = event => {
+        event.preventDefault();
+        if(this.isValidSignup()) {
+            this.props.signup({
+                name: {
+                    first: this.state.firstname,
+                    last: this.state.lastname,
+                },
+                username: this.state.username,
+                password: this.state.password 
+            });
+        } else {
+            console.log("Invalid signup");
+        }
+    }
 }
 
 Signup.propTypes = {

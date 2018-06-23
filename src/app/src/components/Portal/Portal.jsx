@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
-import ModalContainer from "../../containers/ModalContainer";
+import Modal from "./Modal/Modal";
 
 class Portal extends React.Component {
   constructor(props) {
@@ -20,7 +20,7 @@ class Portal extends React.Component {
   }
 
   render() {
-    return ReactDOM.createPortal(<ModalContainer {...this.props} />, this.container);
+    return ReactDOM.createPortal(<Modal {...this.props} />, this.container);
   }
 }
 
