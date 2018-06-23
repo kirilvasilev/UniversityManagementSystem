@@ -10,11 +10,13 @@ export const DELETE_COURSE = 'DELETE_COURSE';
 export const DELETE_USER_COURSE = 'DELETE_COURSE';
 export const CREATE_COURSE = 'CREATE_COURSE';
 export const UPDATE_COURSE = 'UPDATE_COURSE';
+export const FETCH_LECTURERS = 'FETCH_LECTURERS';
 
 // State
 const initialState = {
     courses: [],
-    userCourses: []
+    userCourses: [],
+    lecturers: []
 }
 
 //Actions
@@ -128,6 +130,21 @@ export const addUserCourse = courseId => async dispatch => {
     }
 }
 
+export const fetchLecturers = () => async dispatch => {
+    const localhost = "http://localhost:3000";
+    try {
+        axios.defaults.headers.common['Authorization'] =
+            'JWT ' + localStorage.getItem('jwt');
+        const rsp = await axios.get(`${localhost}/api/v1/users/`);
+        dispatch({
+            type: FETCH_LECTURERS,
+            payload: rsp.data.filter(user => user.isLecturer)
+        });
+    } catch (error) {
+        // handle error here
+    }
+}
+
 // Reducer
 export default function (state = initialState, action = {
     type,
@@ -181,6 +198,13 @@ export default function (state = initialState, action = {
                     ...state.slice(action.payload + 1)
                 ]
             };
+        
+        case FETCH_LECTURERS:
+        return {
+            ...state,
+            lecturers: [...action.payload]
+        };
+
 
         default:
             return state;

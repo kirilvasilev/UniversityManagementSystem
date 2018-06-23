@@ -15,13 +15,18 @@ export class CreateOrUpdateCourses extends React.Component {
             time: "",
             room: "",
             credits: "",
-            lecturerLastName: "",
+            lecturer: "",
             id: "noId"
         };
     }
 
     componentDidMount() {
+
+        this.props.fetchLecturers();
+        console.log(this.props.lecturers);
+
         this.props && Object.keys(this.props.course).length &&
+        
         this.setState({
             name: this.props.course.name,
             description: this.props.course.description,
@@ -29,7 +34,7 @@ export class CreateOrUpdateCourses extends React.Component {
             time: this.props.course.schedules && this.props.course.schedules[0].time,
             room: this.props.course.schedules && this.props.course.schedules[0].room,
             credits: this.props.course.credits,
-            lecturerLastName: this.props.course.lecturer && this.props.course.lecturer.lastName,
+            lecturer: this.props.course.lecturer && this.props.course.lecturer.id,
             id: this.props.course.id
         });
     }
@@ -91,7 +96,18 @@ export class CreateOrUpdateCourses extends React.Component {
                         onChange={this.handleChange}
                         placeholder="Course credits"/>
                     </div>
-                    <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <div class="mdl-selectfield mdl-js-selectfield">
+                        <select class="mdl-selectfield__select" 
+                        id="lecturer" 
+                        name="lecturer"
+                        onChange={this.handleSelectChange}>
+                            {
+                                this.props.lecturers ? this.props.lecturers.map(lecturer => <option value={lecturer.id}>{lecturer.firstName} {lecturer.lastName}</option>) : null 
+                            }
+                        </select>
+                        <label class="mdl-selectfield__label" for="professsion1">Lecturer</label>
+                    </div>
+                    {/* <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                         <input className="mdl-textfield__input lecturerLastName" 
                         type="text" 
                         id="lecturerLastName" 
@@ -99,7 +115,7 @@ export class CreateOrUpdateCourses extends React.Component {
                         value={this.state.lecturerLastName}
                         onChange={this.handleChange}
                         placeholder="Lecturer last name"/>
-                    </div>
+                    </div> */}
                     {
                         this.props.course.name
                             ? <button type="submit" className="mdl-button mdl-js-button submit-button" onClick={(event) => this.updateCourse(event)}>Modify</button>
@@ -116,8 +132,15 @@ export class CreateOrUpdateCourses extends React.Component {
     }
 
     handleChange = event => {
+       
         this.setState({
         [event.target.id]: event.target.value
+        });
+    }
+    handleSelectChange = event => {
+        console.log('handleSelectChange ',[event.target.id],' ', event.target.value);
+        this.setState({
+        [event.target.id]: event.target.options[event.selectedIndex].value
         });
     }
 
@@ -133,7 +156,7 @@ export class CreateOrUpdateCourses extends React.Component {
                     room: this.state.room
                 }],
                 credits: this.state.credits,
-                lecturer: {lastName: this.state.lecturerLastName}
+                lecturer: this.state.lecturer//{lastName: this.state.lecturerLastName}
             });
         } else {
             console.log("Invalid course creation, please fill in all the missing fields");
@@ -153,7 +176,7 @@ export class CreateOrUpdateCourses extends React.Component {
                     room: this.state.room
                 }],
                 credits: this.state.credits,
-                lecturer: {lastName: this.state.lecturerLastName}
+                lecturer: this.state.lecturer//{lastName: this.state.lecturerLastName}
             });
         }
     }
