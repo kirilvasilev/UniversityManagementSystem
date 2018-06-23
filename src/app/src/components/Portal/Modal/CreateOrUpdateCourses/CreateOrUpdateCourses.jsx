@@ -20,11 +20,11 @@ export class CreateOrUpdateCourses extends React.Component {
         };
     }
 
-    componentDidMount() {
-
+    componentWillMount() {
         this.props.fetchLecturers();
-        console.log(this.props.lecturers);
+    }
 
+    componentDidMount() {
         this.props && Object.keys(this.props.course).length &&
         
         this.setState({
@@ -96,26 +96,19 @@ export class CreateOrUpdateCourses extends React.Component {
                         onChange={this.handleChange}
                         placeholder="Course credits"/>
                     </div>
-                    <div class="mdl-selectfield mdl-js-selectfield">
-                        <select class="mdl-selectfield__select" 
+                    <div className="mdl-selectfield mdl-js-selectfield">
+                        <select className="mdl-selectfield__select" 
                         id="lecturer" 
                         name="lecturer"
+                        value={this.state.lecturer != "" ? this.state.lecturer : ""}
                         onChange={this.handleSelectChange}>
+                        <option value="" disabled hidden>Select a lecturer</option>
                             {
-                                this.props.lecturers ? this.props.lecturers.map(lecturer => <option value={lecturer.id}>{lecturer.firstName} {lecturer.lastName}</option>) : null 
+                                this.props.lecturers.map((lecturer, i) => <option key={i} value={lecturer.id}>{lecturer.firstName} {lecturer.lastName}</option>) 
                             }
-                        </select>
-                        <label class="mdl-selectfield__label" for="professsion1">Lecturer</label>
+                        </select>   
+                        <span className="mdl-selectfield__error">Select a lecturer</span>
                     </div>
-                    {/* <div className="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input className="mdl-textfield__input lecturerLastName" 
-                        type="text" 
-                        id="lecturerLastName" 
-                        name="lecturerLastName"
-                        value={this.state.lecturerLastName}
-                        onChange={this.handleChange}
-                        placeholder="Lecturer last name"/>
-                    </div> */}
                     {
                         this.props.course.name
                             ? <button type="submit" className="mdl-button mdl-js-button submit-button" onClick={(event) => this.updateCourse(event)}>Modify</button>
@@ -127,7 +120,7 @@ export class CreateOrUpdateCourses extends React.Component {
 
     isValidCourse() {
         return this.state.name.length > 0 && this.state.description.length > 0
-        && this.state.credits > 0 && this.state.lecturerLastName && this.state.time.length > 0
+        && this.state.credits > 0 && this.state.lecturer && this.state.time.length > 0
         && this.state.dayOfWeek > 0 && this.state.room > 0;
     }
 
@@ -138,9 +131,8 @@ export class CreateOrUpdateCourses extends React.Component {
         });
     }
     handleSelectChange = event => {
-        console.log('handleSelectChange ',[event.target.id],' ', event.target.value);
         this.setState({
-        [event.target.id]: event.target.options[event.selectedIndex].value
+        [event.target.id]: event.target.options[event.target.selectedIndex].value
         });
     }
 
@@ -156,7 +148,7 @@ export class CreateOrUpdateCourses extends React.Component {
                     room: this.state.room
                 }],
                 credits: this.state.credits,
-                lecturer: this.state.lecturer//{lastName: this.state.lecturerLastName}
+                lecturer: this.state.lecturer
             });
         } else {
             console.log("Invalid course creation, please fill in all the missing fields");
@@ -176,7 +168,7 @@ export class CreateOrUpdateCourses extends React.Component {
                     room: this.state.room
                 }],
                 credits: this.state.credits,
-                lecturer: this.state.lecturer//{lastName: this.state.lecturerLastName}
+                lecturer: this.state.lecturer
             });
         }
     }

@@ -82,8 +82,8 @@ class Server {
                 await users[4].courses.push({ creditScore: 4, course: courses[0].id });
                 await users[5].courses.push({ creditScore: 5, course: courses[1].id }, { creditScore: 4, course: courses[2].id });
 
-                courses.forEach(async course => await course.save());
-                users.forEach(async user => await user.save());
+                await courses.forEach(async course => await course.save());
+                await users.forEach(async user => await user.save());
 
                 log(`finished creating relations`);
             }).catch(err => {

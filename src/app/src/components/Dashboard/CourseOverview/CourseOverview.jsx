@@ -19,7 +19,7 @@ export class CourseOverview extends React.Component {
         // loading all of the courses
         (this.props.auth && this.props.auth.isLecturer)
             ? this.props.fetchCourses()
-            : this.props.fetchUserSpecificCourses() && this.props.fetchCourses();
+            : this.props.fetchUserSpecificCourses() && this.props.fetchCourses() ;
     }
 
     render() {

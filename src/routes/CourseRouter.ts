@@ -85,7 +85,11 @@ class CourseRouter extends RouterValidator {
                     delete req.body.deleted;
                     log('Unauthorized action. Can\'t delete course here!', CONTROLLER_NAME, 'UpdateCourse', LogLevel.Warning);
                 }
-
+                
+                if (req.body.id) {
+                    delete req.body.id;
+                }
+       
                 course = await repo.update(req.params.id, req.body);
                 res.status(HttpStatus.ACCEPTED).json(new Course(course));
             }

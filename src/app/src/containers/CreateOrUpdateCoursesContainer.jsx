@@ -1,12 +1,17 @@
 import { connect } from 'react-redux';
 import { dispatch, bindActionCreators } from 'redux';
-import { createCourse, updateCourse } from '../state/courses';
+import { createCourse, updateCourse, fetchLecturers } from '../state/courses';
 import { CreateOrUpdateCourses } from '../components/Portal/Modal/CreateOrUpdateCourses/CreateOrUpdateCourses';
+
+const mapStateToProps = (state) => ({
+    lecturers: state.courses.lecturers
+ })
 
 const mapDispatchToProps = 
 (dispatch) => bindActionCreators({
     createCourse,
-    updateCourse
+    updateCourse,
+    fetchLecturers
 }, dispatch);
 
-export default connect(null, mapDispatchToProps)(CreateOrUpdateCourses);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateOrUpdateCourses);
