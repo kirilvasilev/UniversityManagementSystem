@@ -63,7 +63,7 @@ export const createCourse = course => async dispatch => {
 
 export const updateCourse = course => async dispatch => {
     const localhost = "http://localhost:3000";
-    const index = store.getState().courses.map(course => course.id).indexOf(course.id);
+    const index = store.getState().courses.courses.map(course => course.id).indexOf(course.id);
     try {
         const rsp = await axios.put(`${localhost}/api/v1/courses/${course.id}`, course);
         dispatch({
@@ -99,13 +99,30 @@ export const deleteUserCourse = courseId => async dispatch => {
     const localhost = "http://localhost:3000";
     const index = store.getState().courses.courses.map(course => course.id).indexOf(courseId);
     try {
-        const rsp = await axios.delete(`${localhost}/api/v1/courses/${courseId}`, {
+        const rsp = await axios.delete(`${localhost}/api/v1/users/${courseId}/courses`, {
             "id": courseId
         });
         dispatch({
             type: DELETE_USER_COURSE,
             payload: index
         });
+    } catch (error) {
+        // handle error here
+    }
+}
+
+export const addUserCourse = courseId => async dispatch => {
+    const localhost = "http://localhost:3000";
+    const index = store.getState().courses.courses.map(course => course.id).indexOf(courseId);
+    try {
+        const rsp = await axios.post(`${localhost}/api/v1/users/${courseId}/courses`, {
+            "id": courseId
+        });
+        console.log(rsp)
+        // dispatch({
+        //     type: DELETE_USER_COURSE,
+        //     payload: index
+        // });
     } catch (error) {
         // handle error here
     }

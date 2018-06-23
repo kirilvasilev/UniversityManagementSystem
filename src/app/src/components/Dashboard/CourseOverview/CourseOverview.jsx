@@ -27,6 +27,21 @@ export class CourseOverview extends React.Component {
         return (
             <div className="content-grid mdl-grid app__course-overview">
                 {
+                    this.props.auth && this.props.auth.isLecturer && 
+                    <div className="mdl-cell course-overview__course add">
+                            <h3 className="course-overview__enroll-title">Manage users</h3>
+                            <button className="mdl-button mdl-js-button mdl-button--fab course-overview__enroll" onClick={() =>
+                                this.setState({ showPortal: true })}><i className="material-icons">settings</i></button>
+                            <Portal
+                                open={this.state.showPortal}
+                                header="Manage users"
+                                course={this.props.courses}
+                                isLecturer={true}
+                                onClose={() => this.setState({showPortal: false})}/>
+                            
+                        </div>
+                }
+                {
                     (this.props.auth && this.props.auth.isLecturer) ?
                         <div className="mdl-cell course-overview__course add">
                             <h3 className="course-overview__enroll-title">Create a course</h3>
@@ -54,9 +69,9 @@ export class CourseOverview extends React.Component {
                         </div>
                 }
                 {
-                    !this.props.auth.isLecturer 
-                        ? this.props.userCourses && this.props.userCourses.length > 0 && this.props.userCourses.map(course => <CourseContainer key={(Math.random() * 10000)} course={course}/>)
-                        : this.props.courses && this.props.courses.length > 0 && this.props.courses.map(course => <CourseContainer key={(Math.random() * 10000)} course={course}/>)
+                    this.props.auth.isLecturer 
+                        ? this.props.courses && this.props.courses.length > 0 && this.props.courses.map(course => <CourseContainer key={(Math.random() * 10000)} course={course}/>)
+                        : this.props.userCourses && this.props.userCourses.length > 0 && this.props.userCourses.map(course => <CourseContainer key={(Math.random() * 10000)} course={course}/>)
                 }
             </div>
         );
