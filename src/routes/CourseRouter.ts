@@ -91,7 +91,8 @@ class CourseRouter extends RouterValidator {
                 }
        
                 course = await repo.update(req.params.id, req.body);
-                res.status(HttpStatus.ACCEPTED).json(new Course(course));
+                let createdCourse = await repo.findById(course.id, 'lecturer');
+                res.status(HttpStatus.ACCEPTED).json(new Course(createdCourse));
             }
             else {
                 res.status(HttpStatus.NOT_FOUND).json({ message: 'Course not found.' });
