@@ -74,10 +74,7 @@ export class ManageUsers extends React.Component {
     }
 
     updateUser(id, isLecturer) {
-        
-        let userIndex = this.props.users.findIndex(user => user.id == id);
-        this.props.users[userIndex].isLecturer = !isLecturer;
-        this.props.updateUser(id, isLecturer)
+        this.props.updateUser(id, !isLecturer)
     }
 }
 

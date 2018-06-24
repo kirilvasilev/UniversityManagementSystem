@@ -46,7 +46,7 @@ export const deleteUser = userId => dispatch => {
 export const updateUser = (userId, isLecturer) => async dispatch => {
     const localhost = "http://localhost:3000";
     const index = store.getState().users.users.map(user => user.id).indexOf(userId);
-    const user = { userType: isLecturer}
+    const user = { userType: +isLecturer}
     try {
         const rsp = await axios.put(`${localhost}/api/v1/users/${userId}`, user);
         // .then(() => {

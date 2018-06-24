@@ -61,7 +61,6 @@ class UserRouter extends RouterValidator {
         try {
             let user = await repo.findById(userId.toString());
             if (user && !user.deleted) {
-
                 //Deleting object is only performet with the DETETE verb
                 if (req.body.deleted) {
                     delete req.body.deleted;
@@ -75,7 +74,8 @@ class UserRouter extends RouterValidator {
                     delete req.body.userType;
                 }
 
-                user = await repo.update(userId.toString(), req.body);
+                await repo.update(userId.toString(), req.body);
+                user = await repo.findById(userId.toString());
                 res.status(HttpStatus.ACCEPTED).json(new User(user));
             }
             else {

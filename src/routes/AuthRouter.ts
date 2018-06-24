@@ -24,6 +24,7 @@ class AuthRouter {
     public async Register(req: Request, res: Response) {
         let repo = GetUserRepo();
         try {
+            log(req.body);
             let foundUsers = await repo.find({ username: req.body.username });
             let users = await repo.find();
             if (foundUsers.length > 0) {
@@ -33,7 +34,7 @@ class AuthRouter {
                 req.body.userType = users.length > 0 ? UserType.Student : UserType.Lecturer;
                 let user = await repo.create(req.body);
                 let flatUser = new User(user);
-                res.status(HttpStatus.CREATED).json({ user: flatUser, token: jwt.sign(flatUser, 'SUPERSECRETCODE') });
+                res.status(HttpStatus.CREATED).json({ user: flatUser, token: jwt.sign(JSON.stringify(flatUser), 'SUPERSECRETCODE') });
             }
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'Register');
