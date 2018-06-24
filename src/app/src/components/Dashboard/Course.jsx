@@ -27,7 +27,7 @@ export class Course extends React.Component {
             <div className="mdl-cell course-overview__course">
                 <h4>{this.props.course.name}</h4>
                 <p>{this.props.course.description}</p>
-                <h5>Course lecturer: {this.props.course.lecturer.lastName}</h5>
+                <h5>Course lecturer: {this.props.course.lecturer && this.props.course.lecturer.lastName}</h5>
                 <h5>Course credits: {this.props.course.credits}</h5>
                 <h4>Course Schedule:</h4>
                 {this.props.course.schedules && <p>{this.props.course.schedules[0].dayOfWeek}, {this.props.course.schedules[0].time}, room: {this.props.course.schedules[0].room}</p>}

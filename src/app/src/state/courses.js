@@ -5,9 +5,9 @@ import store from './store';
 
 // Constants
 export const FETCH_COURSES = 'FETCH_COURSES';
-export const FETCH_USER_COURSES = 'FETCH_COURSES';
+export const FETCH_USER_COURSES = 'FETCH_USER_COURSES';
 export const DELETE_COURSE = 'DELETE_COURSE';
-export const DELETE_USER_COURSE = 'DELETE_COURSE';
+export const DELETE_USER_COURSE = 'DELETE_USER_COURSE';
 export const CREATE_COURSE = 'CREATE_COURSE';
 export const UPDATE_COURSE = 'UPDATE_COURSE';
 export const FETCH_LECTURERS = 'FETCH_LECTURERS';
@@ -69,44 +69,43 @@ export const updateCourse = course => async dispatch => {
     try {
         const rsp = await axios.put(`${localhost}/api/v1/courses/${course.id}`, course);
         dispatch({
-            type: DELETE_COURSE,
-            payload: index
-        });
-        dispatch({
             type: UPDATE_COURSE,
-            payload: rsp.data
+            payload: { data: rsp.data, index: index }
         });
     } catch (error) {
         // handle error here
     }
 }
 
-export const deleteCourse = courseId => async dispatch => {
+export const deleteCourse = courseId => dispatch => {
     const localhost = "http://localhost:3000";
     const index = store.getState().courses.courses.map(course => course.id).indexOf(courseId);
     try {
-        const rsp = await axios.delete(`${localhost}/api/v1/courses/${courseId}`, {
-            "id": courseId
+        axios.delete(`${localhost}/api/v1/courses/${courseId}`, {"id": courseId})
+        .then(() => {
+            dispatch({
+                type: DELETE_COURSE,
+                payload: index
+            });
         });
-        dispatch({
-            type: DELETE_COURSE,
-            payload: index
-        });
+        
     } catch (error) {
         // handle error here
     }
 }
 
-export const deleteUserCourse = courseId => async dispatch => {
+export const deleteUserCourse = courseId => dispatch => {
     const localhost = "http://localhost:3000";
     const index = store.getState().courses.courses.map(course => course.id).indexOf(courseId);
     try {
-        const rsp = await axios.delete(`${localhost}/api/v1/users/${courseId}/courses`, {
-            "id": courseId
-        });
-        dispatch({
-            type: DELETE_USER_COURSE,
-            payload: index
+        console.log(courseId)
+        axios.delete(`${localhost}/api/v1/users/courses`, {
+            data: { "id": courseId } 
+        }).then(() => {
+            dispatch({
+                type: DELETE_USER_COURSE,
+                payload: index
+            });
         });
     } catch (error) {
         // handle error here
@@ -154,13 +153,14 @@ export default function (state = initialState, action = {
         case FETCH_COURSES:
             return {
                 ...state,
-                courses: [...action.payload]
+                courses: [...action.payload],
             };
 
         case FETCH_USER_COURSES:
             return {
                 ...state,
-                userCourses: [...action.payload]
+                userCourses: [...action.payload.myCourses],
+                courses: [...action.payload.otherCourses]
             };
 
         case CREATE_COURSE:
@@ -176,8 +176,9 @@ export default function (state = initialState, action = {
             return {
                 ...state,
                 courses: [
-                    ...state,
-                    action.payload
+                    ...state.courses.slice(0, action.payload.index),
+                    ...state.courses.slice(action.payload.index + 1),
+                    action.payload.data
                 ]
             };
 
@@ -185,8 +186,8 @@ export default function (state = initialState, action = {
             return {
                 ...state,
                 courses: [
-                    ...state.slice(0, action.payload),
-                    ...state.slice(action.payload + 1)
+                    ...state.courses.slice(0, action.payload),
+                    ...state.courses.slice(action.payload + 1)
                 ]
             };
 
@@ -194,8 +195,8 @@ export default function (state = initialState, action = {
             return {
                 ...state,
                 userCourses: [
-                    ...state.slice(0, action.payload),
-                    ...state.slice(action.payload + 1)
+                    ...state.userCourses.slice(0, action.payload),
+                    ...state.userCourses.slice(action.payload + 1)
                 ]
             };
         
