@@ -97,9 +97,8 @@ export const deleteCourse = courseId => dispatch => {
 
 export const deleteUserCourse = courseId => dispatch => {
     const localhost = "http://localhost:3000";
-    const index = store.getState().courses.courses.map(course => course.id).indexOf(courseId);
+    const index = store.getState().courses.userCourses.map(course => course.id).indexOf(courseId);
     try {
-        console.log(courseId)
         axios.delete(`${localhost}/api/v1/users/courses`, {
             data: { "id": courseId } 
         }).then(() => {

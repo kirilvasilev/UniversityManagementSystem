@@ -16,9 +16,9 @@ export class ManageUsers extends React.Component {
                 (this.props.users && this.props.users.length > 0)
                 ? this.props.users.map(user => <h1 key={(Math.random() * 10000)}>
                         {user.firstName} {user.lastName} {user.isLecturer ? <span onClick={() => {
-                            this.updateUser(user.id, false)
+                            this.updateUser(user.id, 0)
                         }}>Make student</span> : <span onClick={() => {
-                            this.updateUser(user.id, true)
+                            this.updateUser(user.id, 1)
                         }}>Make lecturer</span>}
                         <button className="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect" onClick={() => {
                                 this.deleteUser(user.id)
