@@ -116,7 +116,7 @@ export const deleteUserCourse = courseId => dispatch => {
 export const addUserCourse = courseId => async dispatch => {
     const localhost = "http://localhost:3000";
     const index = store.getState().courses.courses.map(course => course.id).indexOf(courseId);
-    if(store.getState().courses.userCourses.map(course => course.id).length === 0){
+    if(!store.getState().courses.userCourses.map(course => courseId === course.id).includes(true)){
         try {
             const rsp = await axios.post(`${localhost}/api/v1/users/courses`, {
                 "id": courseId

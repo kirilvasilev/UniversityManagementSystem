@@ -43,6 +43,24 @@ export const deleteUser = userId => dispatch => {
     }
 }
 
+export const updateUser = (userId, isLecturer) => async dispatch => {
+    const localhost = "http://localhost:3000";
+    const index = store.getState().users.users.map(user => user.id).indexOf(userId);
+    const user = { userType: isLecturer}
+    try {
+        const rsp = await axios.put(`${localhost}/api/v1/users/${userId}`, user);
+        // .then(() => {
+            dispatch({
+                type: UPDATE_USERS,
+                payload: {data: rsp.data, index: index}
+            });
+        // });
+        
+    } catch(error) {
+        // handle error here
+    }
+}
+
 // Reducer
 export default function(state = initialState, action={type, payload}) {
     switch(action.type) {
@@ -58,6 +76,24 @@ export default function(state = initialState, action={type, payload}) {
                 users: [
                     ...state.users.slice(0, action.payload),
                     ...state.users.slice(action.payload + 1)
+                ]
+            };
+
+        case UPDATE_USERS:
+        console.log({
+            ...state,
+            users: [
+                ...state.users.slice(0, action.payload.index),
+                ...state.users.slice(action.payload.index + 1),
+                action.payload.data
+            ]
+        })
+            return {
+                ...state,
+                users: [
+                    ...state.users.slice(0, action.payload.index),
+                    ...state.users.slice(action.payload.index + 1),
+                    action.payload.data
                 ]
             };
         
