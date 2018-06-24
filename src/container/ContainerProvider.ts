@@ -48,13 +48,13 @@ export class ContainerProvider {
 /**
  * Provires a repository using the IUserModel interface
  */
-export function GetUserRepo(): IRepositoryBase<IUserModel> {
-    return ContainerProvider.provide<IRepositoryBase<IUserModel>>('RepoUsers');
+export function GetUserRepo(): UserRepository {
+    return ContainerProvider.provide<UserRepository>('RepoUsers');
 }
 
 /**
  * Provires a repository using the ICourseModel interface
  */
-export function GetCourseRepo(): IRepositoryBase<ICourseModel> {
-    return ContainerProvider.provide<IRepositoryBase<ICourseModel>>('RepoCourse');
+export function GetCourseRepo(): CourseRepository {
+    return ContainerProvider.provide<CourseRepository>('RepoCourse');
 }

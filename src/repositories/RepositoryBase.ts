@@ -15,7 +15,7 @@ export interface IRepositoryBase<T> {
 
 export class RepositoryBase<T extends IUMSModel> implements IRepositoryBase<T> {
 
-    private _model: Model<T>;
+    protected _model: Model<T>;
 
     constructor(schemaModel: Model<T>) {
         this._model = schemaModel;

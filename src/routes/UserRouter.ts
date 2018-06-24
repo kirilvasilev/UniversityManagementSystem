@@ -8,6 +8,7 @@ import { UserType } from '../models/UserModel';
 import { User } from '../DTO/User';
 import { Course } from '../DTO/Course';
 import { RouterValidator } from './RouterValidator';
+import { Types } from 'mongoose';
 
 
 const CONTROLLER_NAME = 'UserRouter';
@@ -101,7 +102,7 @@ class UserRouter extends RouterValidator {
         let repo = GetUserRepo();
         let userId = req.params.id || (req as any).user.id;
         try {
-            let user = await repo.findById(userId);
+            let user = await repo.findById(userId.toString());
             if (user && !user.deleted) {
 
                 let courseRepo = GetCourseRepo();
@@ -137,10 +138,11 @@ class UserRouter extends RouterValidator {
         let repo = GetUserRepo();
         let userId = req.params.id || (req as any).user.id;
         try {
+            await repo.addCourse(userId, { creditScore: 0, course: repo.toObjectId(req.body.id) });
             let user = await repo.findById(userId.toString());
-            user.courses.push({ creditScore: 0, course: repo.toObjectId(req.body.id) })
-            user = await user.save();
-            res.status(HttpStatus.CREATED).json(new User(user));
+            // user.courses.push({ creditScore: 0, course: repo.toObjectId(req.body.id) })
+            // user = await user.save();
+            res.status(HttpStatus.CREATED).json({message: 'Course added.'});
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'AddCourse');
         }
@@ -150,8 +152,9 @@ class UserRouter extends RouterValidator {
         let repo = GetUserRepo();
         let userId = req.params.id || (req as any).user.id;
         try {
-            let courseId = repo.toObjectId(req.body.id);
+            let courseId = req.body.id;
             let user = await repo.findById(userId.toString());
+            //await repo.removeCourse(userId, courseId);
             let course = user.courses.find((credit) => credit.course == courseId);
             user.courses.splice(user.courses.indexOf(course), 1);
             user = await user.save();
@@ -165,7 +168,6 @@ class UserRouter extends RouterValidator {
 
         this.router.get('/', this.GetUsers);
 
-        this.router.get('/', this.GetUser);
         this.router.delete('/', this.DeleteUser);
         this.router.put('/', [this.ValidateBody, this.UpdateUser]);
 
