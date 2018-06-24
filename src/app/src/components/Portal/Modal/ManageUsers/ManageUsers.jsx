@@ -10,7 +10,6 @@ export class ManageUsers extends React.Component {
     }
 
     render() {
-        console.log(this.props.users)
         return (
             <React.Fragment>
             {

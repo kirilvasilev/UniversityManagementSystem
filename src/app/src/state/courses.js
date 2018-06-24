@@ -11,6 +11,7 @@ export const DELETE_USER_COURSE = 'DELETE_USER_COURSE';
 export const CREATE_COURSE = 'CREATE_COURSE';
 export const UPDATE_COURSE = 'UPDATE_COURSE';
 export const FETCH_LECTURERS = 'FETCH_LECTURERS';
+export const ADD_USER_COURSE = 'ADD_USER_COURSE';
 
 // State
 const initialState = {
@@ -115,17 +116,20 @@ export const deleteUserCourse = courseId => dispatch => {
 export const addUserCourse = courseId => async dispatch => {
     const localhost = "http://localhost:3000";
     const index = store.getState().courses.courses.map(course => course.id).indexOf(courseId);
-    try {
-        const rsp = await axios.post(`${localhost}/api/v1/users/courses`, {
-            "id": courseId
-        });
-        console.log(rsp)
-        // dispatch({
-        //     type: DELETE_USER_COURSE,
-        //     payload: index
-        // });
-    } catch (error) {
-        // handle error here
+    if(store.getState().courses.userCourses.map(course => course.id).length === 0){
+        try {
+            const rsp = await axios.post(`${localhost}/api/v1/users/courses`, {
+                "id": courseId
+            });
+            dispatch({
+                type: ADD_USER_COURSE,
+                payload: store.getState().courses.courses[index]
+            });     
+        } catch (error) {
+            // handle error here
+        }
+    } else {
+        console.log("You are already enrolled in this course")
     }
 }
 
@@ -201,11 +205,19 @@ export default function (state = initialState, action = {
             };
         
         case FETCH_LECTURERS:
-        return {
-            ...state,
-            lecturers: [...action.payload]
-        };
+            return {
+                ...state,
+                lecturers: [...action.payload]
+            };
 
+        case ADD_USER_COURSE:
+            return {
+                ...state,
+                userCourses: [
+                    ...state.userCourses,
+                    action.payload
+                ]
+            }
 
         default:
             return state;
