@@ -29,7 +29,7 @@ class UserRouter extends RouterValidator {
         let userId = req.params.id || (req as any).user.id;
         try {
             let user = await repo.findById(userId.toString());
-            if (user && !user.deleted) {
+            if (user) {
                 res.status(HttpStatus.OK).json(new User(user));
             } else {
                 res.status(HttpStatus.NOT_FOUND).json({ message: 'User not found.' });
@@ -69,12 +69,11 @@ class UserRouter extends RouterValidator {
                 }
 
                 // Mongoose schema validation fails for enum types
-                if (req.body.userType) {
+                if (req.body.userType && !(req as any).user.isLecturer) {
 
                     log(`Unauthorized action. Invalid userType property: ${req.body.userType}`, CONTROLLER_NAME, 'UpdateUser', LogLevel.Warning);
                     delete req.body.userType;
                 }
-                //TODO: Check if authorized to update userType!
 
                 user = await repo.update(userId.toString(), req.body);
                 res.status(HttpStatus.ACCEPTED).json(new User(user));
@@ -91,7 +90,7 @@ class UserRouter extends RouterValidator {
         let repo = GetUserRepo();
 
         try {
-            let users = await repo.find({ deleted: false }, null, null, 'courses');
+            let users = await repo.find({}, null, null, 'courses');
             res.status(HttpStatus.OK).json(users.map(user => new User(user)));
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'GetUsers');
@@ -139,9 +138,6 @@ class UserRouter extends RouterValidator {
         let userId = req.params.id || (req as any).user.id;
         try {
             await repo.addCourse(userId, { creditScore: 0, course: repo.toObjectId(req.body.id) });
-            let user = await repo.findById(userId.toString());
-            // user.courses.push({ creditScore: 0, course: repo.toObjectId(req.body.id) })
-            // user = await user.save();
             res.status(HttpStatus.CREATED).json({message: 'Course added.'});
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'AddCourse');

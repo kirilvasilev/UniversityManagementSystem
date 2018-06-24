@@ -27,11 +27,11 @@ export class RepositoryBase<T extends IUMSModel> implements IRepositoryBase<T> {
     }
 
     retrieve(): Promise<T[]> {
-        return this._model.find({}).exec();
+        return this._model.find({deleted: false}).exec();
     }
 
     update(_id: string, item: T): Promise<T> {
-        return this._model.findByIdAndUpdate({ _id: this.toObjectId(_id) }, item, { new: true }).exec();
+        return this._model.findByIdAndUpdate({ _id: this.toObjectId(_id), deleted: false }, item, { new: true }).exec();
     }
 
     delete(_id: string): Promise<T> {
@@ -40,20 +40,20 @@ export class RepositoryBase<T extends IUMSModel> implements IRepositoryBase<T> {
 
     findById(_id: string, populate?: string): Promise<T> {
         if(populate) {
-            return this._model.findById(this.toObjectId(_id)).populate(populate).exec();
+            return this._model.findOne({_id: this.toObjectId(_id), deleted: false}).populate(populate).exec();
         }
-        return this._model.findById(this.toObjectId(_id)).exec();
+        return this._model.findOne({_id: this.toObjectId(_id), deleted: false}).exec();
     }
 
     findOne(cond?: Object): Promise<T> {
-        return this._model.findOne(cond).exec();
+        return this._model.findOne({...cond, ...{deleted: false}}).exec();
     }
 
     find(cond?: Object, fields?: Object, options?: Object, populate?: String): Promise<T[]> {
         if(populate) {
-            return this._model.find(cond, fields, options).populate(populate).exec();
+            return this._model.find({...cond, ...{deleted: false}}, fields, options).populate(populate).exec();
         }
-        return this._model.find(cond, fields, options).exec();
+        return this._model.find({...cond, ...{deleted: false}}, fields, options).exec();
     }
 
     public toObjectId(_id: string): Types.ObjectId {
