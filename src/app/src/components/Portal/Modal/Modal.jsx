@@ -3,6 +3,7 @@ import "./Modal.css";
 
 import AddCoursesContainer from '../../../containers/AddCoursesContainer';
 import CreateOrUpdateCoursesContainer from '../../../containers/CreateOrUpdateCoursesContainer';
+import ManageUsersContainer from '../../../containers/ManageUsersContainer';
 
 export class Modal extends Component {
 
@@ -17,6 +18,8 @@ export class Modal extends Component {
                 </header>
                 
                 {
+                    this.props.manageUsers ?
+                    <ManageUsersContainer/> :
                     this.props.isLecturer 
                     ? <CreateOrUpdateCoursesContainer course={this.props.course}/> 
                     : (this.props.course && this.props.course.length > 0 && this.props.course.map(course => <h1 key={(Math.random() * 10000)}>{course.name} 

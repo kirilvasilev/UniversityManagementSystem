@@ -11,7 +11,8 @@ export class CourseOverview extends React.Component {
     constructor() {
         super();
         this.state = {
-          showPortal: false
+          showPortal: false,
+          showManageUsers: false
         };
     }
     
@@ -31,13 +32,14 @@ export class CourseOverview extends React.Component {
                     <div className="mdl-cell course-overview__course add">
                             <h3 className="course-overview__enroll-title">Manage users</h3>
                             <button className="mdl-button mdl-js-button mdl-button--fab course-overview__enroll" onClick={() =>
-                                this.setState({ showPortal: true })}><i className="material-icons">settings</i></button>
+                                this.setState({ showManageUsers: true })}><i className="material-icons">settings</i></button>
                             <Portal
-                                open={this.state.showPortal}
+                                open={this.state.showManageUsers}
                                 header="Manage users"
                                 course={this.props.courses}
                                 isLecturer={true}
-                                onClose={() => this.setState({showPortal: false})}/>
+                                manageUsers={true}
+                                onClose={() => this.setState({showManageUsers: false})}/>
                             
                         </div>
                 }

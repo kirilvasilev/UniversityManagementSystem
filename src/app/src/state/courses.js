@@ -116,7 +116,7 @@ export const addUserCourse = courseId => async dispatch => {
     const localhost = "http://localhost:3000";
     const index = store.getState().courses.courses.map(course => course.id).indexOf(courseId);
     try {
-        const rsp = await axios.post(`${localhost}/api/v1/users/${courseId}/courses`, {
+        const rsp = await axios.post(`${localhost}/api/v1/users/courses`, {
             "id": courseId
         });
         console.log(rsp)
