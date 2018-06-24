@@ -14,8 +14,8 @@ export class ManageUsers extends React.Component {
         return (
             <React.Fragment>
             {
-                <table className="mdl-data-table mdl-js-data-table mdl-shadow--2dp modal__users-management">
-                <thead>
+                <table className="mdl-data-table mdl-js-data-table mdl-data-table--selectable mdl-shadow--2dp modal__users-management">
+                <thead className="table-header">
                 <tr>
                     <th className="mdl-data-table__cell">No.</th>
                     <th className="mdl-data-table__cell--non-numeric">User name</th>
@@ -44,19 +44,19 @@ export class ManageUsers extends React.Component {
                     <td className="mdl-data-table__cell">{i+1}</td>
                     <td className="mdl-data-table__cell--non-numeric">{user.firstName} {user.lastName}</td>
                     <td className="mdl-data-table__cell--non-numeric">
-                    <label className="mdl-switch mdl-js-switch mdl-js-ripple-effect" htmlFor="isLecuter">
-                        <input type="checkbox" className="mdl-checkbox__input" checked={user.isLecturer} onChange={() => {
+                    <div className="md-checkbox">
+                        <input id={"cb"+i} type="checkbox" checked={user.isLecturer} onChange={() => {
                                  this.updateUser(user.id, user.isLecturer);
                              }}/>
-                        <span className="mdl-switch__label"></span>
-                    </label>
+                        <label htmlFor={"cb"+i}></label>
+                    </div>
                     </td>
                     <td className="mdl-data-table__cell--non-numeric">
-                        <button className="mdl-button mdl-js-button mdl-button--icon" onClick={() => {
+                        <button data-tooltip="Delete user" className="mdl-button mdl-js-button mdl-button--icon btn-table-delete" onClick={() => {
                                  this.deleteUser(user.id)
                              }}>
-                            <i className="material-icons">delete_forever</i>
-                            <div className="mdl-tooltip" data-mdl-for="delete-user">Delete user</div>
+                            <i className="material-icons btn-delete-icon">delete_forever</i>
+
                         </button>
                     </td>
                 </tr>): null

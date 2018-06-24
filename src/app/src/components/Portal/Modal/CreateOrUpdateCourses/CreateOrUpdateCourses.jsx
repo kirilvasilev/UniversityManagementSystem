@@ -47,7 +47,7 @@ export class CreateOrUpdateCourses extends React.Component {
                         type="text" 
                         id="name" 
                         name="name"
-                        value={this.state.name}
+                        value={this.state.name ? this.state.name : ""}
                         onChange={this.handleChange}
                         placeholder="Name"/>
                     </div>
@@ -56,7 +56,7 @@ export class CreateOrUpdateCourses extends React.Component {
                         type="text" 
                         id="description" 
                         name="description"
-                        value={this.state.description}
+                        value={this.state.description ? this.state.description : ""}
                         onChange={this.handleChange}
                         placeholder="Description"/>
                     </div>
@@ -65,7 +65,7 @@ export class CreateOrUpdateCourses extends React.Component {
                         type="text" 
                         id="dayOfWeek" 
                         name="dayOfWeek"
-                        value={this.state.dayOfWeek}
+                        value={this.state.dayOfWeek ? this.state.dayOfWeek : ""}
                         onChange={this.handleChange}
                         placeholder="Day of the week in number: 1-7"/>
                     </div>
@@ -74,7 +74,7 @@ export class CreateOrUpdateCourses extends React.Component {
                         type="text" 
                         id="time" 
                         name="time"
-                        value={this.state.time}
+                        value={this.state.time ? this.state.time : ""}
                         onChange={this.handleChange}
                         placeholder="Time: hh:mm:ss"/>
                     </div>
@@ -83,7 +83,7 @@ export class CreateOrUpdateCourses extends React.Component {
                         type="text" 
                         id="room" 
                         name="room"
-                        value={this.state.room}
+                        value={this.state.room ? this.state.room : ""}
                         onChange={this.handleChange}
                         placeholder="Room"/>
                     </div>
@@ -92,7 +92,7 @@ export class CreateOrUpdateCourses extends React.Component {
                         type="text" 
                         id="credits" 
                         name="credits"
-                        value={this.state.credits}
+                        value={this.state.credits ? this.state.credits : ""}
                         onChange={this.handleChange}
                         placeholder="Course credits"/>
                     </div>
@@ -100,7 +100,7 @@ export class CreateOrUpdateCourses extends React.Component {
                         <select className="mdl-selectfield__select" 
                         id="lecturer" 
                         name="lecturer"
-                        value={this.state.lecturer != "" ? this.state.lecturer : ""}
+                        value={this.state.lecturer ? this.state.lecturer : ""}
                         onChange={this.handleSelectChange}>
                         <option value="" disabled hidden>Select a lecturer</option>
                             {
