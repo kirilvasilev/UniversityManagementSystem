@@ -80,14 +80,6 @@ export default function(state = initialState, action={type, payload}) {
             };
 
         case UPDATE_USERS:
-        console.log({
-            ...state,
-            users: [
-                ...state.users.slice(0, action.payload.index),
-                ...state.users.slice(action.payload.index + 1),
-                action.payload.data
-            ]
-        })
             return {
                 ...state,
                 users: [

@@ -1,4 +1,4 @@
-#users-data table {
-    max-width: 400px;
-    width: 100% !important;
-  }
+.modal__users-management {
+  width: 100%;
+  height: 550px;
+}

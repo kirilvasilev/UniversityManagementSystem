@@ -14,7 +14,7 @@ export class ManageUsers extends React.Component {
         return (
             <React.Fragment>
             {
-                <table className="mdl-data-table mdl-js-data-table mdl-shadow--2dp" id="users-data">
+                <table className="mdl-data-table mdl-js-data-table mdl-shadow--2dp modal__users-management">
                 <thead>
                 <tr>
                     <th className="mdl-data-table__cell">No.</th>
@@ -44,15 +44,15 @@ export class ManageUsers extends React.Component {
                     <td className="mdl-data-table__cell">{i+1}</td>
                     <td className="mdl-data-table__cell--non-numeric">{user.firstName} {user.lastName}</td>
                     <td className="mdl-data-table__cell--non-numeric">
-                    <label className="mdl-checkbox mdl-js-checkbox mdl-js-ripple-effect" htmlFor="isLecuter">
-                        <input type="checkbox" id="isLecuter" className="mdl-checkbox__input" checked={user.isLecturer} onChange={() => {
+                    <label className="mdl-switch mdl-js-switch mdl-js-ripple-effect" htmlFor="isLecuter">
+                        <input type="checkbox" className="mdl-checkbox__input" checked={user.isLecturer} onChange={() => {
                                  this.updateUser(user.id, user.isLecturer);
                              }}/>
                         <span className="mdl-switch__label"></span>
                     </label>
                     </td>
                     <td className="mdl-data-table__cell--non-numeric">
-                        <button className="mdl-button mdl-js-button mdl-button--icon" id="delete-user" onClick={() => {
+                        <button className="mdl-button mdl-js-button mdl-button--icon" onClick={() => {
                                  this.deleteUser(user.id)
                              }}>
                             <i className="material-icons">delete_forever</i>
