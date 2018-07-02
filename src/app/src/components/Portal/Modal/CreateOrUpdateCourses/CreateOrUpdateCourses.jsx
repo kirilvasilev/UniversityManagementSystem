@@ -119,8 +119,8 @@ export class CreateOrUpdateCourses extends React.Component {
     }
 
     isValidCourse() {
-        return this.state.name.length > 0 && this.state.description.length > 0
-        && this.state.credits > 0 && this.state.lecturer && this.state.time.length > 0
+        return this.state.name.length > 0 && this.state.credits > 0
+         && this.state.lecturer != undefined && this.state.time.length > 0
         && this.state.dayOfWeek > 0 && this.state.room > 0;
     }
 
@@ -153,6 +153,7 @@ export class CreateOrUpdateCourses extends React.Component {
         } else {
             console.log("Invalid course creation, please fill in all the missing fields");
         }
+        this.props.onClose();
     }
 
     updateCourse = event => {
@@ -170,7 +171,10 @@ export class CreateOrUpdateCourses extends React.Component {
                 credits: this.state.credits,
                 lecturer: this.state.lecturer
             });
+        } else {
+            console.log("Invalid course creation, please fill in all the missing fields");
         }
+        this.props.onClose();
     }
 }
 

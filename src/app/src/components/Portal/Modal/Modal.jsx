@@ -21,9 +21,9 @@ export class Modal extends Component {
                     this.props.manageUsers ?
                     <ManageUsersContainer/> :
                     this.props.isLecturer 
-                    ? <CreateOrUpdateCoursesContainer course={this.props.course}/> 
+                    ? <CreateOrUpdateCoursesContainer course={this.props.course} onClose={() => this.props.onClose()}/> 
                     : (this.props.course && this.props.course.length > 0 && this.props.course.map(course => <h1 key={(Math.random() * 10000)}>{course.name} 
-                        <AddCoursesContainer courseId={course.id}/>
+                        <AddCoursesContainer courseId={course.id} onClose={() => this.props.onClose()}/>
                     </h1>))
                 }
             </div>
