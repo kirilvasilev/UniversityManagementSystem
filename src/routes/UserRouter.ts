@@ -68,7 +68,7 @@ class UserRouter extends RouterValidator {
                 }
 
                 // Mongoose schema validation fails for enum types
-                if (req.body.userType && !(req as any).user.isLecturer) {
+                if (req.body.userType != undefined && !(req as any).user.isLecturer) {
 
                     log(`Unauthorized action. Invalid userType property: ${req.body.userType}`, CONTROLLER_NAME, 'UpdateUser', LogLevel.Warning);
                     delete req.body.userType;
@@ -138,7 +138,7 @@ class UserRouter extends RouterValidator {
         let userId = req.params.id || (req as any).user.id;
         try {
             await repo.addCourse(userId, { creditScore: 0, course: repo.toObjectId(req.body.id) });
-            res.status(HttpStatus.CREATED).json({message: 'Course added.'});
+            res.status(HttpStatus.CREATED).json({ message: 'Course added.' });
         } catch (error) {
             handleError(res, error, CONTROLLER_NAME, 'AddCourse');
         }
