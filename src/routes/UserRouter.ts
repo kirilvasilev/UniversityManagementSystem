@@ -9,6 +9,7 @@ import { User } from '../DTO/User';
 import { Course } from '../DTO/Course';
 import { RouterValidator } from './RouterValidator';
 import { Types } from 'mongoose';
+import { IRequest } from '../helpers/helpers';
 
 
 const CONTROLLER_NAME = 'UserRouter';
@@ -24,9 +25,9 @@ class UserRouter extends RouterValidator {
     }
 
     /** Returns the user's data and the courses he is attending  */
-    public async GetUser(req: Request, res: Response) {
+    public async GetUser(req: IRequest, res: Response) {
         let repo = GetUserRepo();
-        let userId = req.params.id || (req as any).user.id;
+        let userId = req.params.id || req.user.id;
         try {
             let user = await repo.findById(userId.toString());
             if (user) {
@@ -41,9 +42,9 @@ class UserRouter extends RouterValidator {
 
 
 
-    public async DeleteUser(req: Request, res: Response) {
+    public async DeleteUser(req: IRequest, res: Response) {
         let repo = GetUserRepo();
-        let userId = req.params.id || (req as any).user.id;
+        let userId = req.params.id || req.user.id;
         try {
             let user = await repo.findById(userId.toString());
             user.deleted = true;
@@ -55,9 +56,9 @@ class UserRouter extends RouterValidator {
         }
     }
 
-    public async UpdateUser(req: Request, res: Response) {
+    public async UpdateUser(req: IRequest, res: Response) {
         let repo = GetUserRepo();
-        let userId = req.params.id || (req as any).user.id;
+        let userId = req.params.id || req.user.id;
         try {
             let user = await repo.findById(userId.toString());
             if (user && !user.deleted) {
@@ -68,7 +69,7 @@ class UserRouter extends RouterValidator {
                 }
 
                 // Mongoose schema validation fails for enum types
-                if (req.body.userType != undefined && !(req as any).user.isLecturer) {
+                if (req.body.userType != undefined && !req.user.isLecturer) {
 
                     log(`Unauthorized action. Invalid userType property: ${req.body.userType}`, CONTROLLER_NAME, 'UpdateUser', LogLevel.Warning);
                     delete req.body.userType;
@@ -86,7 +87,7 @@ class UserRouter extends RouterValidator {
         }
     }
 
-    public async GetUsers(req: Request, res: Response) {
+    public async GetUsers(req: IRequest, res: Response) {
         let repo = GetUserRepo();
 
         try {
@@ -97,9 +98,9 @@ class UserRouter extends RouterValidator {
         }
     }
 
-    public async GetUserCourses(req: Request, res: Response) {
+    public async GetUserCourses(req: IRequest, res: Response) {
         let repo = GetUserRepo();
-        let userId = req.params.id || (req as any).user.id;
+        let userId = req.params.id || req.user.id;
         try {
             let user = await repo.findById(userId.toString());
             if (user && !user.deleted) {
@@ -133,9 +134,9 @@ class UserRouter extends RouterValidator {
         }
     }
 
-    public async AddCourse(req: Request, res: Response) {
+    public async AddCourse(req: IRequest, res: Response) {
         let repo = GetUserRepo();
-        let userId = req.params.id || (req as any).user.id;
+        let userId = req.params.id || req.user.id;
         try {
             await repo.addCourse(userId, { creditScore: 0, course: repo.toObjectId(req.body.id) });
             res.status(HttpStatus.CREATED).json({ message: 'Course added.' });
@@ -144,9 +145,9 @@ class UserRouter extends RouterValidator {
         }
     }
 
-    public async RemoveCourse(req: Request, res: Response) {
+    public async RemoveCourse(req: IRequest, res: Response) {
         let repo = GetUserRepo();
-        let userId = req.params.id || (req as any).user.id;
+        let userId = req.params.id || req.user.id;
         try {
             let courseId = req.body.id;
             let user = await repo.findById(userId.toString());
