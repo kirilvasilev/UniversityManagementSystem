@@ -3,6 +3,7 @@
         "module": "commonjs",
         "esModuleInterop": true,
         "target": "es6",
+        "experimentalDecorators": true,
         "noImplicitAny": true,
         "moduleResolution": "node",
         "sourceMap": true,
@@ -24,5 +25,8 @@
     "exclude": [
         "node_modules",
         "**/app/**"
+    ],
+    "files": [
+        "definitions/*"
     ]
 }
