@@ -6,7 +6,6 @@ import { handleError } from '../handlers/ErrorHandler';
 import { log, LogLevel } from '../logger/ILogger';
 import { Course } from '../DTO/Course';
 import { RouterValidator } from './RouterValidator';
-import { IRequest } from '../helpers/helpers';
 
 
 const CONTROLLER_NAME = 'CourseRouter';
@@ -50,10 +49,10 @@ class CourseRouter extends RouterValidator {
         }
     }
 
-    public async CreateCourse(req: IRequest, res: Response) {
+    public async CreateCourse(req: Request, res: Response) {
         let repo = GetCourseRepo();
         try {
-            if (req.body.lecturer == undefined) req.body.lecturer = req.user.id
+            if (req.body.lecturer == undefined) req.body.lecturer = (req as any).user.id
             let course = await repo.create(req.body);
             let createdCourse = await repo.findById(course.id, 'lecturer');
             res.status(HttpStatus.CREATED).json(new Course(createdCourse));
@@ -125,7 +124,7 @@ class CourseRouter extends RouterValidator {
             handleError(res, error, CONTROLLER_NAME, 'AddSchedule');
         }
     }
-    @handled(CONTROLLER_NAME)
+
     public async RemoveSchedule(req: Request, res: Response) {
         let repo = GetCourseRepo();
         try {
@@ -155,16 +154,7 @@ class CourseRouter extends RouterValidator {
         this.router.delete('/:id/schedules/', [this.ValidateId, this.RemoveSchedule]);
     }
 }
- async function handled(controller_name: string) {
-    try {
-        return await function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-            return descriptor
-        };
-    }
-    catch (error) {
-        handleError(res, error, CONTROLLER_NAME, 'GetUser');
-    }
-}
+
 // export
 
 export default new CourseRouter().router;

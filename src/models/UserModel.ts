@@ -17,4 +17,3 @@ export interface IUserModel extends IUMSModel {
         course: Types.ObjectId;
     }];
 };
-
